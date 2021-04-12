@@ -39,6 +39,7 @@
 ;; (global-display-line-numbers-mode)
 (setq display-line-numbers-type t)
 (setq display-line-numbers-type 'relative)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; where to backup files.
 (setq backup-directory-alist `(("" . ,(concat user-emacs-directory
@@ -99,6 +100,7 @@
                       hungry-delete
                       swiper
                       counsel
+                      ivy
                       smartparens
                       org-roam
                       ;; ;; --- Major Mode ---
@@ -126,6 +128,9 @@
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
 (exec-path-from-shell-copy-env "PYTHONPATH")
+
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load-file custom-file)
 
 
 (if (display-graphic-p)
@@ -321,3 +326,8 @@
           (lambda () (setq dash-at-point-docset "elisp")))
 (add-hook 'lisp-mode-hook
           (lambda () (setq dash-at-point-docset "lisp")))
+
+
+(define-abbrev-table 'global-abbrev-table '(
+                                            ("gs" "git remote -vv && echo $'\\n\\tCurrent repository status:' &&  git status")
+                                            ))
