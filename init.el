@@ -7,8 +7,16 @@
 ;; ;; already disable by emacs-mac compile
 (scroll-bar-mode -1)
 
-(setq-default abbrev-mode t)
 (setq mac-use-title-bar t)
+(setq-default abbrev-mode t)
+(setq-default cursor-type 'bar)
+
+(global-hl-line-mode 1)
+(global-auto-revert-mode t)
+
+;; the different between setq and setq-default only exists when the variable to
+;; deal is buffer-local variable, so you should use setq-default
+
 ;; ;; tocreate
 ;; (setq ns-pop-up-frames nil)
 
@@ -26,6 +34,7 @@
                                              (convert-standard-filename "themes")))
 
 ;; ;; should disable in term-mode. 
+;; ;; use prog-mode-hook instead temperaly
 ;; ;; tocreate https://stackoverflow.com/questions/6837511/automatically-disable-a-global-minor-mode-for-a-specific-major-mode
 ;; (global-display-line-numbers-mode)
 (setq display-line-numbers-type t)
@@ -45,7 +54,6 @@
       `((".*" ,(concat user-emacs-directory
                        (convert-standard-filename "emacs-autosaves")) t)))
 
-
 (add-to-list 'load-path
              (concat user-emacs-directory
                      (convert-standard-filename "elisp/")))
@@ -53,7 +61,7 @@
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 (setq indent-line-function 'insert-tab)
-(electric-indent-mode nil)
+;; (electric-indent-mode nil)
 
 ;; load package for you use
 (when (>= emacs-major-version 24)
@@ -62,6 +70,8 @@
                              ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))))
 
 (require 'cl)
+;; disable doom theme's visual warning
+(setq byte-compile-warnings '(cl-functions))
 
  ;; Add Packages
 (defvar my/packages '(
@@ -117,50 +127,6 @@
   (exec-path-from-shell-initialize))
 (exec-path-from-shell-copy-env "PYTHONPATH")
 
-;; not work yet
-(add-hook 'emacs-lisp-mode-hook 'show-paren-mode)
-
-(global-hl-line-mode 1)
-(global-auto-revert-mode t)
-
-;; (require 'evil)
-(evil-mode t)
-;; (require 'evil-surround)
-(global-evil-surround-mode 1)
-(define-key evil-normal-state-map "u" 'undo-fu-only-undo)
-(define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
-
-;; about org-mode support python
-(org-babel-do-load-languages
-  'org-babel-load-languages
-  '((python . t) (R . t) (shell . t)))
-(setq org-src-fontify-natively t)
-(setq org-confirm-babel-evaluate nil)
-(setq org-startup-folded nil)
-(setq org-agenda-files '("~/Documents/org-note/"))
-(global-set-key (kbd "C-c a") 'org-agenda)
-
-
-;; define org-mode vim-style keymaping.
-(add-to-list 'load-path "~/.emacs.d/plugins/evil-org-mode")
-;; (require 'evil-org)
-
-
-(use-package org-roam
-  :ensure t
-  :hook
-  (after-init . org-roam-mode)
-  :custom
-  (org-roam-directory "/Users/gfgkmn/Documents/roamwiki/")
-  :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
-
-;; (add-hook 'org-mode-hook (lambda () (setq truncate-lines nil)))
 
 (if (display-graphic-p)
     (progn
@@ -182,6 +148,71 @@
         ;; Corrects (and improves) org-mode's native fontification.
         (doom-themes-org-config))
       (menu-bar-mode -1)))
+
+
+;; dashboasd's config
+(dashboard-setup-startup-hook)
+;; Set the title
+(setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
+;; Set the banner
+(setq dashboard-startup-banner "/Users/gfgkmn/Configs/Emacs/emacs_red_small.png")
+;; Value can be
+;; 'official:  which displays the official emacs logo
+;; 'logo:  which displays an alternative emacs logo
+;; 1, 2 or 3 which displays one of the text banners
+;; "path/to/your/image.png" which displays whatever image you would prefer
+;; ;; Content is not centered by default. To center, set
+;; (setq dashboard-center-content t)
+;; To disable shortcut "jump" indicators for each section, set
+;; (setq dashboard-show-shortcuts nil)
+(setq dashboard-items '((recents  . 10)
+                        (bookmarks . 5)
+                        ; (projects . 5)
+                        (agenda . 5)))
+                        ; (registers . 5)))
+(setq dashboard-set-heading-icons t)
+(setq dashboard-set-file-icons t)
+(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+
+
+;; evil config
+(evil-mode t)
+
+;; evil-surround config
+(global-evil-surround-mode 1)
+(define-key evil-normal-state-map "u" 'undo-fu-only-undo)
+(define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
+
+;; org-mode config
+;; python
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((python . t) (R . t) (shell . t)))
+(setq org-src-fontify-natively t)
+(setq org-confirm-babel-evaluate nil)
+(setq org-startup-folded nil)
+(setq org-agenda-files '("~/Documents/org-note/"))
+(global-set-key (kbd "C-c a") 'org-agenda)
+
+;; define org-mode vim-style keymaping.
+(add-to-list 'load-path "~/.emacs.d/plugins/evil-org-mode")
+
+;; org-roam config
+(use-package org-roam
+  :ensure t
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory "/Users/gfgkmn/Documents/roamwiki/")
+  :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
+
+;; (add-hook 'org-mode-hook (lambda () (setq truncate-lines nil)))
 
 (setq org-roam-server-host "127.0.0.1"
       org-roam-server-port 9090
@@ -225,17 +256,16 @@
             ;; "dd" 'dash-at-point-with-docset)
             "dd" 'dash-at-point)
 
- (require 'popwin)
- (popwin-mode t)
+(require 'popwin)
+(popwin-mode t)
 
 (defun open_emacs ()
-    (interactive)
-    (find-file user-init-file))
+  (interactive)
+  (find-file user-init-file))
 
 (defun eval_emacs ()
-    (interactive)
-    (load-file user-init-file))
-
+  (interactive)
+  (load-file user-init-file))
 
 (general-define-key :prefix leader-backslash
 		    "er" 'eval_emacs)
@@ -262,7 +292,12 @@
 (electric-pair-mode 1)
 (setq electric-pair-pairs '( (?\` . ?\`) ) )
 
-(add-hook 'after-init-hook 'global-company-mode)
+;; not work yet
+(add-hook 'prog-mode-hook 'show-paren-mode)
+
+
+;; (add-hook 'after-init-hook 'global-company-mode)
+(add-hook 'prog-mode-hook 'global-company-mode)
 
 ;; ;; bind major mode
 ;; (add-to-list 'auto-mode-alist  '("\\.md\\'" . org-mode))
@@ -275,40 +310,6 @@
 ;; ein's config ?
 (when (executable-find "ipython")
   (setq python-shell-interpreter "ipython"))
-
-
-;; dashboasd's config
-(dashboard-setup-startup-hook)
-;; Set the title
-(setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
-;; Set the banner
-(setq dashboard-startup-banner "/Users/gfgkmn/Configs/Emacs/emacs_red_small.png")
-;; Value can be
-;; 'official which displays the official emacs logo
-;; 'logo which displays an alternative emacs logo
-;; 1, 2 or 3 which displays one of the text banners
-;; "path/to/your/image.png" which displays whatever image you would prefer
-;; ;; Content is not centered by default. To center, set
-;; (setq dashboard-center-content t)
-;; To disable shortcut "jump" indicators for each section, set
-;; (setq dashboard-show-shortcuts nil)
-(setq dashboard-items '((recents  . 10)
-                        (bookmarks . 5)
-                        ; (projects . 5)
-                        (agenda . 5)))
-                        ; (registers . 5)))
-(setq dashboard-set-heading-icons t)
-(setq dashboard-set-file-icons t)
-(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-
-
-;; disable doom theme's visual warning
-(setq byte-compile-warnings '(cl-functions))
-
-
-(setq-default cursor-type 'bar)
-;; the different between setq and setq-default only exists when the variable to
-;; deal is buffer-local variable, so you should use setq-default
 
 ;; common lisp config
 (load (expand-file-name "~/.quicklisp/slime-helper.el"))
