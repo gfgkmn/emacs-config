@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: bash 
+# key: bash
+# --
+	\`\`\` bash
+	#+begin_src shell :results output :async
+	$0
+	#+end_src
+	\`\`\`
