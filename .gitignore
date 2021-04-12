@@ -3,3 +3,5 @@ emacs-autosaves/*
 emacs-backup/*
 org-roam.db
 auto-save-list/*
+eshell/*
+url/*
