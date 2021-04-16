@@ -11,6 +11,8 @@
 (setq-default abbrev-mode t)
 (setq-default cursor-type 'bar)
 
+(fset 'yes-or-no-p 'y-or-n-p)
+
 (global-hl-line-mode 1)
 (global-auto-revert-mode t)
 
@@ -28,7 +30,7 @@
 ;;       :foreground (face-foreground 'default)
 ;;       :background (face-background 'default))
 
-  
+
 ;; set gui's color theme
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory
                                              (convert-standard-filename "themes")))
@@ -57,7 +59,7 @@
 
 (add-to-list 'load-path
              (concat user-emacs-directory
-                     (convert-standard-filename "elisp/")))
+                     (convert-standard-filename "self_elisp/")))
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
@@ -66,15 +68,13 @@
 
 ;; load package for you use
 (when (>= emacs-major-version 24)
-    (package-initialize)
-    (setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-                             ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))))
+  (package-initialize)
+  (setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+                           ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))))
 
 (require 'cl)
-;; disable doom theme's visual warning
-(setq byte-compile-warnings '(cl-functions))
 
- ;; Add Packages
+;; Add Packages
 (defvar my/packages '(
                       ;; Self plugins
                       dashboard
@@ -172,9 +172,9 @@
 ;; (setq dashboard-show-shortcuts nil)
 (setq dashboard-items '((recents  . 10)
                         (bookmarks . 5)
-                        ; (projects . 5)
+                        ;; (projects . 5)
                         (agenda . 5)))
-                        ; (registers . 5)))
+                        ;; (registers . 5)))
 (setq dashboard-set-heading-icons t)
 (setq dashboard-set-file-icons t)
 (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
@@ -191,8 +191,8 @@
 ;; org-mode config
 ;; python
 (org-babel-do-load-languages
-  'org-babel-load-languages
-  '((python . t) (R . t) (shell . t)))
+ 'org-babel-load-languages
+ '((python . t) (R . t) (shell . t)))
 (setq org-src-fontify-natively t)
 (setq org-confirm-babel-evaluate nil)
 (setq org-startup-folded nil)
@@ -239,7 +239,7 @@
   (interactive)
   (let (beg end)
     (if (region-active-p)
-      (setq beg (region-beginning) end (region-end))
+        (setq beg (region-beginning) end (region-end))
       (setq beg (line-beginning-position) end (line-end-position)))
     (comment-or-uncomment-region beg end)))
 
@@ -251,15 +251,17 @@
 (setq leader-backslash "\\")
 
 (general-define-key :prefix leader-next
-		    "b" 'next-buffer)
+                    "b" 'next-buffer)
 
 (general-define-key :prefix leader-backslash
-		    "nt" 'neotree-toggle
-            "be" 'ivy-switch-buffer
-		    "re" 'eval-last-sexp
-		    "ci" 'delete-other-windows
-            ;; "dd" 'dash-at-point-with-docset)
-            "dd" 'dash-at-point)
+                    "nt" 'neotree-toggle
+                    "be" 'ivy-switch-buffer
+                    "se" 'counsel-search
+                    "re" 'eval-last-sexp
+                    "ca" 'delete-other-windows
+                    "ci" 'delete-window
+                    ;; "dd" 'dash-at-point-with-docset)
+                    "dd" 'dash-at-point)
 
 (require 'popwin)
 (popwin-mode t)
@@ -273,16 +275,16 @@
   (load-file user-init-file))
 
 (general-define-key :prefix leader-backslash
-		    "er" 'eval_emacs)
+                    "er" 'eval_emacs)
 
 (general-define-key :prefix leader-backslash
-		    "oi" 'open_emacs)
+                    "oi" 'open_emacs)
 
 ;; use recent file
 (recentf-mode 1)
 (setq recentf-max-menu-items 100)
 (general-define-key :prefix leader-backslash
-		    "vf" 'recentf-open-files)
+                    "vf" 'recentf-open-files)
 ;; (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 ;; tocreate: what's this
@@ -331,3 +333,77 @@
 (define-abbrev-table 'global-abbrev-table '(
                                             ("gs" "git remote -vv && echo $'\\n\\tCurrent repository status:' &&  git status")
                                             ))
+
+;; ivy counsel and swiper config
+(ivy-mode)
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
+(setq counsel-search-engine 'google)
+;; maybe should indicate it only available when search on web
+(ivy-partial-or-done)
+;; enable this if you want `swiper' to use it
+;; (setq search-default-mode #'char-fold-to-regexp)
+(global-set-key "\C-s" 'swiper)
+(global-set-key (kbd "C-c r") 'ivy-resume)
+(global-set-key (kbd "<f6>") 'ivy-resume)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(global-set-key (kbd "C-c k") 'counsel-ag)
+;; (global-set-key (kbd "C-x l") ')
+;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+
+(setq locate-command "mdfind")
+(setq counsel-locate-cmd 'counsel-locate-cmd-mdfind)
+
+(general-define-key :prefix leader-backslash
+                    "vo" 'counsel-find-file
+                    "vg" 'counsel-locate)
+
+(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+
+;; disable doom theme's visual warning
+(setq byte-compile-warnings '(cl-functions))
+
+;; hippie-expand function config
+(setq hippie-expand-try-function-list '(try-expand-debbrev
+                                        try-expand-debbrev-all-buffers
+                                        try-expand-debbrev-from-kill
+                                        try-complete-file-name-partially
+                                        try-complete-file-name
+                                        try-expand-all-abbrevs
+                                        try-expand-list
+                                        try-expand-line
+                                        try-complete-lisp-symbol-partially
+					                    try-complete-lisp-symbol))
+;; control+n and control + y conflict with emacs's control +y, tocreate
+(global-set-key (kbd "C-n") 'hippie-expand)
+
+;; * + 创建目录
+;; * g 刷新目录
+;; * C 拷贝
+;; * D 删除
+;; * R 重命名
+;; * d 标记删除
+;; * u 取消标记
+;; * x 执行所有的标记
+
+;; dired mode config
+;; always copy folder recursive
+(setq dired-recursive-deletes 'always)
+(setq dired-recursive-copies 'always)
+;; make every folder in dired mode in only one buffer
+(put 'dired-find-alternate-file 'disabled nil)
+
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
+(require 'dired-x)
+(setq dired-dwin-target 1)
