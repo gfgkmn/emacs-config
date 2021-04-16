@@ -339,9 +339,10 @@
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 (setq counsel-search-engine 'google)
+
 ;; maybe should indicate it only available when search on web
-(ivy-partial-or-done)
-;; enable this if you want `swiper' to use it
+;; (ivy-partial-or-done)
+
 ;; (setq search-default-mode #'char-fold-to-regexp)
 (global-set-key "\C-s" 'swiper)
 (global-set-key (kbd "C-c r") 'ivy-resume)
