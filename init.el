@@ -11,7 +11,18 @@
 (setq-default abbrev-mode t)
 (setq-default cursor-type 'bar)
 
+;; highlight the brackets where the cursor locate
+(define-advice show-paren-function (:around (fn) fix-show-paren-function)
+  "Highlight enclosing parens."
+  (cond ((looking-at-p "\\s(") (funcall fn))
+	(t (save-excursion
+	     (ignore-errors (backward-up-list))
+	     (funcall fn)))))
+
 (fset 'yes-or-no-p 'y-or-n-p)
+
+(desktop-save-mode 1)
+(push "/Users/gfgkmn/.emacs.d/save-sessions/" desktop-path)
 
 (global-hl-line-mode 1)
 (global-auto-revert-mode t)
@@ -38,10 +49,12 @@
 ;; ;; should disable in term-mode. 
 ;; ;; use prog-mode-hook instead temperaly
 ;; ;; tocreate https://stackoverflow.com/questions/6837511/automatically-disable-a-global-minor-mode-for-a-specific-major-mode
-;; (global-display-line-numbers-mode)
+;; ;; tocreate https://stackoverflow.com/questions/29169210/how-to-disable-global-minor-mode-in-a-specified-major-mode
 (setq display-line-numbers-type t)
 (setq display-line-numbers-type 'relative)
+;; (add-hook 'prog-mode-hook (unless (eq major-mode 'term-mode) 'display-line-numbers-mode))
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'special-mode-hook 'display-line-numbers-mode)
 
 ;; where to backup files.
 (setq backup-directory-alist `(("" . ,(concat user-emacs-directory
@@ -84,10 +97,12 @@
                       company
                       vimrc-mode
                       ein
+                      hierarchy
                       ;; about ipython notebook
                       ob-async
                       ;; acculerate org-mode ipython execute
                       yasnippet
+                      yasnippet-snippets
                       general
                       use-package
                       evil
@@ -95,6 +110,7 @@
                       evil-surround
                       undo-fu
                       popwin
+                      dash-at-point
                       ;; package
                       ;; --- Better Editor ---
                       hungry-delete
@@ -105,6 +121,7 @@
                       org-roam
                       ;; ;; --- Major Mode ---
                       ;; js2-mode
+                      web-mode
                       ;; ;; --- Minor Mode ---
                       ;; nodejs-repl
                       exec-path-from-shell
@@ -253,6 +270,10 @@
 (general-define-key :prefix leader-next
                     "b" 'next-buffer)
 
+(setq leader-space "SPC")
+(general-define-key :prefix leader-space
+                    "r" 'eww-reload)
+
 (general-define-key :prefix leader-backslash
                     "nt" 'neotree-toggle
                     "be" 'ivy-switch-buffer
@@ -261,7 +282,8 @@
                     "ca" 'delete-other-windows
                     "ci" 'delete-window
                     ;; "dd" 'dash-at-point-with-docset)
-                    "dd" 'dash-at-point)
+                    "dd" 'dash-at-point
+                    "ex" 'dired)
 
 (require 'popwin)
 (popwin-mode t)
@@ -295,16 +317,57 @@
 ;; ;; yasnippet's config
 (yas-global-mode 1)
 
-;; what's this
-(electric-pair-mode 1)
-(setq electric-pair-pairs '( (?\` . ?\`) ) )
+;; smartparens-mode config
+(smartparens-global-mode)
+;; disable ' pair in elisp mode 
+(sp-local-pair '(emacs-lisp-mode lisp-interaction-mode) "'" nil :actions nil)
+(sp-local-pair '(emacs-lisp-mode lisp-interaction-mode) "`" nil :actions nil)
 
-;; not work yet
-(add-hook 'prog-mode-hook 'show-paren-mode)
+;; company-mode and yasnippet config
+;; (use-package company
+;;   :ensure t
+;;   :config
+;;   (global-company-mode t)
+;;   (setq company-idle-delay 0)
+;;   (setq company-global-modes '(not recentf-dialog-mode))
+;;   (setq company-backends
+;;         '((company-files
+;;            company-yasnippet
+;;            company-keywords
+;;            company-capf)
+;;           (company-abbrev company-dabbrev))))
+;; (add-hook 'emacs-lisp-mode-hook (lambda()
+;;                                   (add-to-list (make-local-variable 'company-backends)
+;;                                                'company-files)))
 
+(setq company-global-modes '(not recentf-dialog-mode))
+(add-hook 'after-init-hook 'global-company-mode)
 
-;; (add-hook 'after-init-hook 'global-company-mode)
-(add-hook 'prog-mode-hook 'global-company-mode)
+(defun company-yasnippet-or-completion ()
+  (interactive)
+  (let ((yas-fallback-behavior nil))
+    (unless (yas-expand)
+      (call-interactively #'company-complete-common))))
+
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "M-n") nil)
+  (define-key company-active-map (kbd "M-p") nil)
+  (define-key company-active-map (kbd "C-n") #'company-select-next)
+  (define-key company-active-map (kbd "C-p") #'company-select-previous)
+  (define-key company-active-map (kbd "C-y") #'company-complete-selection))
+
+;; (with-eval-after-load 'yasnippet
+;;   (define-key yas-keymap (kbd "C-j") #'yas-expand-from-trigger-key)
+;;   (define-key yas-keymap (kbd "C-l") #'yas-describe-tables)
+;;   )
+
+(global-set-key (kbd "C-j") #'yas-expand-from-trigger-key)
+(global-set-key (kbd "C-l") #'yas-describe-tables)
+
+;; tocreate redundent with company-yasnippet-or-completion ?
+(advice-add 'company-complete-common :before (lambda () (setq my-company-point (point))))
+(advice-add 'company-complete-common :after (lambda () (when (eq my-company-point (point))
+                                                         (yas-expand))))
 
 ;; ;; bind major mode
 ;; (add-to-list 'auto-mode-alist  '("\\.md\\'" . org-mode))
@@ -339,7 +402,6 @@
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 (setq counsel-search-engine 'google)
-
 ;; maybe should indicate it only available when search on web
 ;; (ivy-partial-or-done)
 
@@ -348,7 +410,6 @@
 (global-set-key (kbd "C-c r") 'ivy-resume)
 (global-set-key (kbd "<f6>") 'ivy-resume)
 (global-set-key (kbd "M-x") 'counsel-M-x)
-
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
 (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
 (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
@@ -361,13 +422,42 @@
 ;; (global-set-key (kbd "C-x l") ')
 ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 
-(setq locate-command "mdfind")
-(setq counsel-locate-cmd 'counsel-locate-cmd-mdfind)
+(setq counsel-locate-db-path "~/.config/locatedb")
+
+(defun counsel-locate-cmd-mdfind-all (input)
+  "Return a `mdfind' shell command based on INPUT."
+  (counsel-require-program "mdfind")
+  (format "mdfind %s" (shell-quote-argument input)))
+
+(defun counsel-locate-mdfind-function (input)
+  "Call a \"locate\" style shell command with INPUT."
+  (or
+   (ivy-more-chars)
+   (progn
+     (counsel--async-command
+      (funcall #'counsel-locate-cmd-mdfind-all input))
+     '("" "working..."))))
+
+
+(defun counsel-locate-mdfind (&optional initial-input)
+  "Call a \"locate\" style shell command.
+INITIAL-INPUT can be given as the initial minibuffer input."
+  (interactive)
+  (ivy-read "Locate: " 'counsel-locate-mdfind-function
+            :initial-input initial-input
+            :dynamic-collection t
+            :history 'counsel-locate-history
+            :action (lambda (file)
+                      (when file
+                        (with-ivy-window
+                          (find-file
+                           (concat (file-remote-p default-directory) file)))))
+            :caller 'counsel-locate-mdfind))
 
 (general-define-key :prefix leader-backslash
                     "vo" 'counsel-find-file
+                    "vl" 'counsel-locate-mdfind
                     "vg" 'counsel-locate)
-
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
@@ -408,3 +498,11 @@
   (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
 (require 'dired-x)
 (setq dired-dwin-target 1)
+
+
+;; web-mode config
+(setq auto-mode-alist
+      (append
+       '(("\\.js\\'" . js2-mode))
+       '(("\\.html\\'" . web-mode))
+       auto-mode-alist))
