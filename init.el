@@ -99,15 +99,19 @@
                       ein
                       hierarchy
                       ;; about ipython notebook
+                      flycheck
                       ob-async
                       ;; acculerate org-mode ipython execute
                       yasnippet
                       yasnippet-snippets
                       general
+                      which-key
                       use-package
                       evil
+                      evil-leader
                       evil-org
                       evil-surround
+                      evil-collection
                       undo-fu
                       popwin
                       dash-at-point
@@ -118,6 +122,9 @@
                       counsel
                       ivy
                       smartparens
+                      expand-region
+                      iedit
+                      ;; roam research
                       org-roam
                       ;; ;; --- Major Mode ---
                       ;; js2-mode
@@ -197,7 +204,16 @@
 (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 
 
+;; which-key config
+(which-key-mode 1)
+
 ;; evil config
+(setq evil-want-keybinding nil)
+(require 'evil)
+(when (require 'evil-collection nil t)
+  (evil-collection-init))
+
+(global-evil-leader-mode)
 (evil-mode t)
 
 ;; evil-surround config
@@ -274,6 +290,20 @@
 (general-define-key :prefix leader-space
                     "r" 'eww-reload)
 
+;; occur-mode config
+(defun occur-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))
+
 (general-define-key :prefix leader-backslash
                     "nt" 'neotree-toggle
                     "be" 'ivy-switch-buffer
@@ -283,7 +313,10 @@
                     "ci" 'delete-window
                     ;; "dd" 'dash-at-point-with-docset)
                     "dd" 'dash-at-point
-                    "ex" 'dired)
+                    "ex" 'dired
+                    "tg" 'counsel-imenu
+                    "si" 'customize-group
+                    "oc" 'occur-dwim)
 
 (require 'popwin)
 (popwin-mode t)
@@ -363,6 +396,9 @@
 
 (global-set-key (kbd "C-j") #'yas-expand-from-trigger-key)
 (global-set-key (kbd "C-l") #'yas-describe-tables)
+
+(global-set-key (kbd "C-=") #'er/expand-region)
+(global-set-key (kbd "C-;") #'iedit-mode)
 
 ;; tocreate redundent with company-yasnippet-or-completion ?
 (advice-add 'company-complete-common :before (lambda () (setq my-company-point (point))))
@@ -506,3 +542,6 @@ INITIAL-INPUT can be given as the initial minibuffer input."
        '(("\\.js\\'" . js2-mode))
        '(("\\.html\\'" . web-mode))
        auto-mode-alist))
+
+;; flycheck config
+(add-hook 'prog-mode-hook 'flycheck-mode)
