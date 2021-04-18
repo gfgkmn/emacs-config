@@ -27,6 +27,8 @@
 (global-hl-line-mode 1)
 (global-auto-revert-mode t)
 
+(windmove-default-keybindings)
+
 ;; the different between setq and setq-default only exists when the variable to
 ;; deal is buffer-local variable, so you should use setq-default
 
@@ -123,12 +125,17 @@
                       ivy
                       smartparens
                       expand-region
+                      winum
+                      ;; for lisp programming
+                      s
+                      f
                       iedit
                       ;; roam research
                       org-roam
                       ;; ;; --- Major Mode ---
                       ;; js2-mode
                       web-mode
+                      emmet-mode
                       ;; ;; --- Minor Mode ---
                       ;; nodejs-repl
                       exec-path-from-shell
@@ -281,14 +288,9 @@
                     "c" 'comment-or-uncomment-regionline)
 
 (setq leader-next "]")
-(setq leader-backslash "\\")
 
 (general-define-key :prefix leader-next
                     "b" 'next-buffer)
-
-(setq leader-space "SPC")
-(general-define-key :prefix leader-space
-                    "r" 'eww-reload)
 
 ;; occur-mode config
 (defun occur-dwim ()
@@ -304,19 +306,20 @@
         regexp-history)
   (call-interactively 'occur))
 
-(general-define-key :prefix leader-backslash
-                    "nt" 'neotree-toggle
-                    "be" 'ivy-switch-buffer
-                    "se" 'counsel-search
-                    "re" 'eval-last-sexp
-                    "ca" 'delete-other-windows
-                    "ci" 'delete-window
-                    ;; "dd" 'dash-at-point-with-docset)
-                    "dd" 'dash-at-point
-                    "ex" 'dired
-                    "tg" 'counsel-imenu
-                    "si" 'customize-group
-                    "oc" 'occur-dwim)
+(evil-leader/set-key
+  "nt" 'neotree-toggle
+  "be" 'ivy-switch-buffer
+  "se" 'counsel-search
+  "re" 'eval-last-sexp
+  "ca" 'delete-other-windows
+  "ci" 'delete-window
+  ;; "dd" 'dash-at-point-with-docset)
+  "dd" 'dash-at-point
+  "ex" 'dired
+  "tg" 'counsel-imenu
+  "si" 'customize-group
+  "oc" 'occur-dwim)
+
 
 (require 'popwin)
 (popwin-mode t)
@@ -329,17 +332,18 @@
   (interactive)
   (load-file user-init-file))
 
-(general-define-key :prefix leader-backslash
-                    "er" 'eval_emacs)
+(evil-leader/set-key
+  "er" 'eval_emacs)
 
-(general-define-key :prefix leader-backslash
-                    "oi" 'open_emacs)
+(evil-leader/set-key
+  "oi" 'open_emacs)
 
 ;; use recent file
 (recentf-mode 1)
 (setq recentf-max-menu-items 100)
-(general-define-key :prefix leader-backslash
-                    "vf" 'recentf-open-files)
+
+(evil-leader/set-key
+  "vf" 'recentf-open-files)
 ;; (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 ;; tocreate: what's this
@@ -394,6 +398,7 @@
 ;;   (define-key yas-keymap (kbd "C-l") #'yas-describe-tables)
 ;;   )
 
+;; ;; tocreate should replaced by evil-state leader key-binding
 (global-set-key (kbd "C-j") #'yas-expand-from-trigger-key)
 (global-set-key (kbd "C-l") #'yas-describe-tables)
 
@@ -490,10 +495,10 @@ INITIAL-INPUT can be given as the initial minibuffer input."
                            (concat (file-remote-p default-directory) file)))))
             :caller 'counsel-locate-mdfind))
 
-(general-define-key :prefix leader-backslash
-                    "vo" 'counsel-find-file
-                    "vl" 'counsel-locate-mdfind
-                    "vg" 'counsel-locate)
+(evil-leader/set-key
+  "vo" 'counsel-find-file
+  "vl" 'counsel-locate-mdfind
+  "vg" 'counsel-locate)
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
