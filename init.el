@@ -6,23 +6,20 @@
 (tool-bar-mode -1)
 ;; ;; already disable by emacs-mac compile
 (scroll-bar-mode -1)
+(menu-bar-mode -1)
 
 (setq mac-use-title-bar t)
 (setq-default abbrev-mode t)
 (setq-default cursor-type 'bar)
 
-;; highlight the brackets where the cursor locate
-(define-advice show-paren-function (:around (fn) fix-show-paren-function)
-  "Highlight enclosing parens."
-  (cond ((looking-at-p "\\s(") (funcall fn))
-	(t (save-excursion
-	     (ignore-errors (backward-up-list))
-	     (funcall fn)))))
+(if (daemonp)
+    nil
+  (setq confirm-kill-emacs 'yes-or-no-p))
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(desktop-save-mode 1)
-(push "/Users/gfgkmn/.emacs.d/save-sessions/" desktop-path)
+;; (desktop-save-mode 1)
+;; (push "/Users/gfgkmn/.emacs.d/save-sessions/" desktop-path)
 
 (global-hl-line-mode 1)
 (global-auto-revert-mode t)
@@ -32,8 +29,8 @@
 ;; the different between setq and setq-default only exists when the variable to
 ;; deal is buffer-local variable, so you should use setq-default
 
-;; ;; tocreate
-;; (setq ns-pop-up-frames nil)
+;; tocreate
+(setq ns-pop-up-frames nil)
 
 ;; ;; disable by doom theme or dashboard
 ;; (setq inhibit-startup-screen t)
@@ -56,7 +53,9 @@
 (setq display-line-numbers-type 'relative)
 ;; (add-hook 'prog-mode-hook (unless (eq major-mode 'term-mode) 'display-line-numbers-mode))
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'Fundamental-mode-hook 'display-line-numbers-mode)
 (add-hook 'special-mode-hook 'display-line-numbers-mode)
+(add-hook 'markdown-mode-hook 'display-line-numbers-mode)
 
 ;; where to backup files.
 (setq backup-directory-alist `(("" . ,(concat user-emacs-directory
@@ -121,12 +120,17 @@
                       ;; --- Better Editor ---
                       hungry-delete
                       swiper
+                      neotree
                       counsel
                       ivy
+                      prescient
+                      ivy-prescient
+                      company-prescient
                       smartparens
                       iedit
                       expand-region
                       winum
+                      magit
                       ;; for lisp programming
                       s
                       f
@@ -137,6 +141,11 @@
                       ;; roam research
                       org-roam
                       ;; ;; --- Major Mode ---
+                      ;; markdown
+                      markdown-mode
+                      ;; swift-mode
+                      swift-mode
+                      flycheck-swift
                       ;; js2-mode
                       web-mode
                       emmet-mode
@@ -168,10 +177,7 @@
 (load-file custom-file)
 
 
-(if (display-graphic-p)
-    (progn
-      ;; (load-theme 'Amelie t)
-      (use-package doom-themes
+(use-package doom-themes
         :config
         ;; Global settings (defaults)
         (setq doom-themes-enable-bold nil    ; if nil, bold is universally disabled
@@ -187,7 +193,15 @@
         
         ;; Corrects (and improves) org-mode's native fontification.
         (doom-themes-org-config))
-      (menu-bar-mode -1)))
+
+;; highlight the brackets where the cursor locate
+(show-paren-mode)
+(define-advice show-paren-function (:around (fn) fix-show-paren-function)
+  "Highlight enclosing parens."
+  (cond ((looking-at-p "\\s(") (funcall fn))
+	(t (save-excursion
+	     (ignore-errors (backward-up-list))
+	     (funcall fn)))))
 
 
 ;; dashboasd's config
@@ -220,12 +234,18 @@
 
 ;; evil config
 (setq evil-want-keybinding nil)
+(setq evil-want-fine-undo t)
 (require 'evil)
 (when (require 'evil-collection nil t)
   (evil-collection-init))
 
 (global-evil-leader-mode)
 (evil-mode t)
+
+(define-key evil-normal-state-map (kbd "C-h") #'evil-window-left)
+(define-key evil-normal-state-map (kbd "C-j") #'evil-window-down)
+(define-key evil-normal-state-map (kbd "C-k") #'evil-window-up)
+(define-key evil-normal-state-map (kbd "C-l") #'evil-window-right)
 
 ;; evil-surround config
 (global-evil-surround-mode 1)
@@ -291,10 +311,10 @@
 (general-define-key :prefix leaderg
                     "c" 'comment-or-uncomment-regionline)
 
-(setq leader-next "]")
-
-(general-define-key :prefix leader-next
-                    "b" 'next-buffer)
+;; ;; overwriten by evil leader
+;; (setq leader-next "]")
+;; (general-define-key :prefix leader-next
+;;                     "b" 'other-window)
 
 ;; occur-mode config
 (defun occur-dwim ()
@@ -309,6 +329,8 @@
               (regexp-quote sym))))
         regexp-history)
   (call-interactively 'occur))
+
+(require 'counsel)
 
 (evil-leader/set-key
   "nt" 'neotree-toggle
@@ -439,10 +461,14 @@
 
 
 (define-abbrev-table 'global-abbrev-table '(
-                                            ("gs" "git remote -vv && echo $'\\n\\tCurrent repository status:' &&  git status")
+                                            ;; ("gs" "git remote -vv && echo $'\\n\\tCurrent repository status:' &&  git status")
+                                            ("oc" "ssh:yuhe@192.168.53.10")
+                                            ("ocsu" "ssh:yuhe@192.168.53.10|sudo::")
+                                            ("dv" "ssh:yuhe@192.168.53.6")
+                                            ("ia" "ssh:yuhe@192.168.53.5")
                                             ))
 
-;; ivy counsel and swiper config
+;; Ivy counsel and swiper config
 (ivy-mode)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
@@ -451,7 +477,7 @@
 ;; (ivy-partial-or-done)
 
 ;; (setq search-default-mode #'char-fold-to-regexp)
-(global-set-key "\C-s" 'swiper)
+(global-set-key "\C-s" 'swiper-isearch)
 (global-set-key (kbd "C-c r") 'ivy-resume)
 (global-set-key (kbd "<f6>") 'ivy-resume)
 (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -501,8 +527,8 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 
 (evil-leader/set-key
   "vo" 'counsel-find-file
-  "vl" 'counsel-locate-mdfind
-  "vg" 'counsel-locate)
+  "vg" 'counsel-locate-mdfind
+  "vl" 'counsel-locate)
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
@@ -554,6 +580,28 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 
 ;; flycheck config
 (add-hook 'prog-mode-hook 'flycheck-mode)
+
+(evil-leader/set-key
+  "ql" 'flycheck-list-errors)
+
+
+;; get current file name
+(defun my-put-file-name-on-clipboard ()
+  "Put the current file name on the clipboard"
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (with-temp-buffer
+        (insert filename)
+        (clipboard-kill-region (point-min) (point-max)))
+      (message filename))))
+
+(setq leaderc ",")
+(general-define-key :prefix leaderc
+                    "cy" 'my-put-file-name-on-clipboard)
+
 
 ;; ;; eaf config, still a litter slow
 ;; (use-package eaf
