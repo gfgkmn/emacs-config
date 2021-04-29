@@ -10,3 +10,5 @@ save-sessions/*
 notes
 tramp
 transient/*
+abbrev_defs
+elpa/archives/melpa/archive-contents
