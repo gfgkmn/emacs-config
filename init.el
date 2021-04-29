@@ -90,6 +90,10 @@
 
 ;; Add Packages
 (defvar my/packages '(
+                      ;; for lisp programming
+                      dash
+                      s
+                      f
                       ;; Self plugins
                       dashboard
                       all-the-icons
@@ -99,6 +103,7 @@
                       vimrc-mode
                       ein
                       hierarchy
+                      async
                       ;; about ipython notebook
                       flycheck
                       ob-async
@@ -108,7 +113,6 @@
                       general
                       which-key
                       use-package
-                      evil
                       evil-leader
                       evil-org
                       evil-surround
@@ -123,6 +127,7 @@
                       neotree
                       counsel
                       ivy
+                      imenu-list
                       prescient
                       ivy-prescient
                       company-prescient
@@ -131,9 +136,6 @@
                       expand-region
                       winum
                       magit
-                      ;; for lisp programming
-                      s
-                      f
                       ;; eaf dependency
                       ctable
                       epc
@@ -247,19 +249,45 @@
 (define-key evil-normal-state-map (kbd "C-k") #'evil-window-up)
 (define-key evil-normal-state-map (kbd "C-l") #'evil-window-right)
 
+(use-package better-jumper
+  :ensure t
+  :config
+  (better-jumper-mode 1)
+  (with-eval-after-load 'evil-maps
+    (define-key evil-motion-state-map (kbd "C-o") 'better-jumper-jump-backward)
+    (define-key evil-motion-state-map (kbd "C-i") 'better-jumper-jump-forward)))
+
+
+(use-package evil-indent-plus
+  :ensure t
+  :config
+  (evil-indent-plus-default-bindings))
+
+(use-package evil-text-object-python
+  :ensure t)
+
+(use-package imenu-list
+  :ensure t
+  :config
+  (setq imenu-list-focus-after-activation t))
+(use-package exato :ensure t)
+
+(use-package recentf-ext
+  :ensure t)
+
 ;; evil-surround config
 (global-evil-surround-mode 1)
 (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
 (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
 
-;; markdown-preview mode
-(use-package livedown
-  :load-path "~/.emacs.d/site-lisp/emacs-livedown"
-  :custom
-  (livedown-autostart nil) ; automatically open preview when opening markdown files
-  (livedown-open t)        ; automatically open the browser window
-  (livedown-port 1337)     ; port for livedown server
-  (livedown-browser nil))
+;; ;; markdown-preview mode
+;; (use-package livedown
+;;   :load-path "~/.emacs.d/site-lisp/emacs-livedown"
+;;   :custom
+;;   (livedown-autostart nil) ; automatically open preview when opening markdown files
+;;   (livedown-open t)        ; automatically open the browser window
+;;   (livedown-port 1337)     ; port for livedown server
+;;   (livedown-browser nil))
 
 ;; org-mode config
 ;; python
@@ -339,7 +367,7 @@
         regexp-history)
   (call-interactively 'occur))
 
-(require 'counsel)
+;; (require 'counsel)
 
 (evil-leader/set-key
   "nt" 'neotree-toggle
@@ -347,16 +375,16 @@
   "se" 'counsel-search
   "re" 'eval-last-sexp
   "ca" 'delete-other-windows
-  "ci" 'delete-window
   ;; "dd" 'dash-at-point-with-docset)
   "dd" 'dash-at-point
   "ex" 'dired
-  "tg" 'counsel-imenu
+  ;; "tg" 'counsel-imenu
+  "tg" 'imenu-list-smart-toggle
   "si" 'customize-group
   "oc" 'occur-dwim)
 
 
-(require 'popwin)
+;; (require 'popwin)
 (popwin-mode t)
 
 (defun open_emacs ()
@@ -378,7 +406,7 @@
 (setq recentf-max-menu-items 100)
 
 (evil-leader/set-key
-  "vf" 'recentf-open-files)
+  "vf" 'fzf)
 ;; (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 ;; tocreate: what's this
@@ -576,7 +604,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
-(require 'dired-x)
+;; (require 'dired-x)
 (setq-default dired-dwin-target 1)
 
 
