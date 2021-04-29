@@ -4,6 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(browse-url-browser-function 'browse-url-default-macosx-browser)
+ '(dired-dwim-target 'dired-dwim-target-next)
  '(evil-want-C-u-scroll t)
  '(package-selected-packages
    '(dashboard all-the-icons cnfonts doom-themes company vimrc-mode ein ob-async yasnippet general use-package evil evil-org evil-surround undo-fu popwin hungry-delete swiper counsel smartparens org-roam exec-path-from-shell))

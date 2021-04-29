@@ -7,3 +7,6 @@ eshell/*
 url/*
 request/*
 save-sessions/*
+notes
+tramp
+transient/*

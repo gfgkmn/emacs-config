@@ -252,6 +252,15 @@
 (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
 (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
 
+;; markdown-preview mode
+(use-package livedown
+  :load-path "~/.emacs.d/site-lisp/emacs-livedown"
+  :custom
+  (livedown-autostart nil) ; automatically open preview when opening markdown files
+  (livedown-open t)        ; automatically open the browser window
+  (livedown-port 1337)     ; port for livedown server
+  (livedown-browser nil))
+
 ;; org-mode config
 ;; python
 (org-babel-do-load-languages
@@ -568,7 +577,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 (with-eval-after-load 'dired
   (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
 (require 'dired-x)
-(setq dired-dwin-target 1)
+(setq-default dired-dwin-target 1)
 
 
 ;; web-mode config
