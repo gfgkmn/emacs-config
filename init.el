@@ -509,12 +509,14 @@
   (define-key company-active-map (kbd "C-p") #'company-select-previous)
   (define-key company-active-map (kbd "C-y") #'company-complete-selection))
 
+(define-key ivy-mode-map (kbd "C-u") 'backward-kill-sentence)
 
 (define-key evil-insert-state-map (kbd "C-j") #'yas-expand-from-trigger-key)
 (define-key evil-insert-state-map (kbd "C-l") #'yas-describe-tables)
 
 (global-set-key (kbd "C-=") #'er/expand-region)
 (global-set-key (kbd "C-;") #'iedit-mode)
+(global-set-key (kbd "C-x k") #'kill-buffer-and-window)
 
 ;; tocreate redundent with company-yasnippet-or-completion ?
 (advice-add 'company-complete-common :before (lambda () (setq my-company-point (point))))
