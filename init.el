@@ -252,6 +252,9 @@
 (global-evil-leader-mode)
 (evil-mode t)
 
+(define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
+(define-key evil-normal-state-map (kbd "C-e") 'end-of-line)
+(define-key evil-insert-state-map (kbd "C-a") 'beginning-of-line)
 (define-key evil-normal-state-map (kbd "C-h") #'evil-window-left)
 (define-key evil-normal-state-map (kbd "C-j") #'evil-window-down)
 (define-key evil-normal-state-map (kbd "C-k") #'evil-window-up)
@@ -454,8 +457,7 @@
 (use-package ycmd
   :ensure t
   :init
-  (set-variable 'ycmd-server-command '("python" "/Users/gfgkmn/.vim/vundles/YouCompleteMe_emacs/third_party/ycmd/ycmd"))
-  ;; (set-variable 'ycmd-server-command '("python" "~/.emacs.d/ycmd_completer/ycmd"))
+  (set-variable 'ycmd-server-command '("python" "/Users/gfgkmn/.emacs.d/ycmd_completer/ycmd/ycmd"))
   :config
   (add-hook 'after-init-hook #'global-ycmd-mode))
 

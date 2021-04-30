@@ -5,6 +5,9 @@
  ;; If there is more than one, they won't work right.
  '(browse-url-browser-function 'browse-url-default-macosx-browser)
  '(dired-dwim-target 'dired-dwim-target-next)
+ '(evil-want-C-d-scroll t)
+ '(evil-want-C-g-bindings t)
+ '(evil-want-C-u-delete t)
  '(evil-want-C-u-scroll t)
  '(neo-window-width 40)
  '(package-selected-packages
