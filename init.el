@@ -663,6 +663,12 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 ;; (require 'dired-x)
 (setq-default dired-dwin-target 1)
 
+(use-package dired-git-info
+  :ensure t
+  :config
+  (setq dgi-auto-hide-details-p nil)
+  (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable))
+
 
 ;; web-mode config
 (setq auto-mode-alist
