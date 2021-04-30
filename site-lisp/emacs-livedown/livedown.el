@@ -41,49 +41,46 @@
 (defun replace-in-string (what with in)
   (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
 
-(setq quoted-name (if (string-match " " buffer-file-name)
-                    (replace-in-string " " "\ " buffer-file-name)
-                    buffer-file-name))
 
 ;;;###autoload
 (defun livedown-preview ()
   "Preview the current file in livedown."
   (interactive)
 
-  (setq quoted-name (if (string-match " " buffer-file-name)
+  (let quoted-name (if (string-match " " buffer-file-name)
                         (replace-in-string " " "\ " buffer-file-name)
-                      buffer-file-name))
+                      buffer-file-name)
 
-  (call-process-shell-command
-   (format "livedown stop --port %s &"
-           livedown-port))
+       (call-process-shell-command
+        (format "livedown stop --port %s &"
+                livedown-port))
 
-  (start-process-shell-command
-   (format "emacs-livedown")
-   (format "emacs-livedown-buffer")
-   (format "livedown start %s --port %s %s %s "
-           quoted-name
-           livedown-port
-           (if livedown-browser (concat "--browser " livedown-browser) "")
-           (if livedown-open "--open" "")))
-  (print (format "%s rendered @ %s" quoted-name livedown-port) (get-buffer "emacs-livedown-buffer")))
+       (start-process-shell-command
+        (format "emacs-livedown")
+        (format "emacs-livedown-buffer")
+        (format "livedown start %s --port %s %s %s "
+                quoted-name
+                livedown-port
+                (if livedown-browser (concat "--browser " livedown-browser) "")
+                (if livedown-open "--open" "")))
+       (print (format "%s rendered @ %s" quoted-name livedown-port) (get-buffer "emacs-livedown-buffer"))))
 
 ;;;###autoload
 (defun typora-preview ()
   "Preview the current file in livedown."
   (interactive)
 
-  (setq quoted-name (if (string-match " " buffer-file-name)
+  (let quoted-name (if (string-match " " buffer-file-name)
                         (replace-in-string " " "\ " buffer-file-name)
-                      buffer-file-name))
+                      buffer-file-name)
 
-  (start-process-shell-command
-   (format "typora-livedown")
-   (format "typora-livedown-buffer")
-   (format "open -a %s %s"
-           "Typora.app"
-           quoted-name))
-  (print (format "typora rendered @ %s" quoted-name) (get-buffer "typora-livedown-buffer")))
+       (start-process-shell-command
+        (format "typora-livedown")
+        (format "typora-livedown-buffer")
+        (format "open -a %s %s"
+                "Typora.app"
+                quoted-name))
+       (print (format "typora rendered @ %s" quoted-name) (get-buffer "typora-livedown-buffer"))))
 
 ;;;###autoload
 (defun livedown-kill (&optional async)

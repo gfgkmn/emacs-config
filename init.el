@@ -182,10 +182,10 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load-file custom-file)
 
-(use-package neotree
-  :ensure t
-  :config
-  (setq neo-smart-open t))
+;; (use-package neotree
+;;   :ensure t
+;;   :config
+;;   (setq neo-smart-open t))
 
 (use-package doom-themes
         :config
@@ -253,7 +253,6 @@
 (evil-mode t)
 
 (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
-(define-key evil-normal-state-map (kbd "C-e") 'end-of-line)
 (define-key evil-insert-state-map (kbd "C-a") 'beginning-of-line)
 (define-key evil-normal-state-map (kbd "C-h") #'evil-window-left)
 (define-key evil-normal-state-map (kbd "C-j") #'evil-window-down)
@@ -499,14 +498,10 @@
   (define-key company-active-map (kbd "C-p") #'company-select-previous)
   (define-key company-active-map (kbd "C-y") #'company-complete-selection))
 
-;; (with-eval-after-load 'yasnippet
-;;   (define-key yas-keymap (kbd "C-j") #'yas-expand-from-trigger-key)
-;;   (define-key yas-keymap (kbd "C-l") #'yas-describe-tables)
-;;   )
-
-;; ;; tocreate should replaced by evil-state leader key-binding
-(global-set-key (kbd "C-j") #'yas-expand-from-trigger-key)
-(global-set-key (kbd "C-l") #'yas-describe-tables)
+(with-eval-after-load 'yasnippet
+  (define-key yas-keymap (kbd "C-j") #'yas-expand-from-trigger-key)
+  (define-key yas-keymap (kbd "C-l") #'yas-describe-tables)
+  )
 
 (global-set-key (kbd "C-=") #'er/expand-region)
 (global-set-key (kbd "C-;") #'iedit-mode)
@@ -604,7 +599,8 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   "vf" 'counsel-fzf
   "vg" 'counsel-locate-mdfind
   "vl" 'counsel-locate
-  "vv" 'counsel-ag)
+  "vv" 'counsel-ag
+  "vs" 'magit)
 
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
