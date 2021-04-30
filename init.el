@@ -1,3 +1,9 @@
+;;; package --- Summary:
+;;; Commentary:
+;;; seems like the standard
+
+;;; Code:
+
 (setq user-init-file (or load-file-name (buffer-file-name)))
 (setq user-emacs-directory (file-name-directory user-init-file))
 
@@ -11,6 +17,7 @@
 (setq mac-use-title-bar t)
 (setq-default abbrev-mode t)
 (setq-default cursor-type 'bar)
+(setq scroll-conservatively 50)
 
 (if (daemonp)
     nil
@@ -45,7 +52,7 @@
 (add-to-list 'custom-theme-load-path (concat user-emacs-directory
                                              (convert-standard-filename "themes")))
 
-;; ;; should disable in term-mode. 
+;; ;; should disable in term-mode.
 ;; ;; use prog-mode-hook instead temperaly
 ;; ;; tocreate https://stackoverflow.com/questions/6837511/automatically-disable-a-global-minor-mode-for-a-specific-major-mode
 ;; ;; tocreate https://stackoverflow.com/questions/29169210/how-to-disable-global-minor-mode-in-a-specified-major-mode
@@ -105,7 +112,6 @@
                       hierarchy
                       async
                       ;; about ipython notebook
-                      flycheck
                       ob-async
                       ;; acculerate org-mode ipython execute
                       yasnippet
@@ -124,7 +130,6 @@
                       ;; --- Better Editor ---
                       hungry-delete
                       swiper
-                      neotree
                       counsel
                       ivy
                       imenu-list
@@ -147,7 +152,6 @@
                       markdown-mode
                       ;; swift-mode
                       swift-mode
-                      flycheck-swift
                       ;; js2-mode
                       web-mode
                       emmet-mode
@@ -178,6 +182,10 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load-file custom-file)
 
+(use-package neotree
+  :ensure t
+  :config
+  (setq neo-smart-open t))
 
 (use-package doom-themes
         :config
@@ -249,13 +257,18 @@
 (define-key evil-normal-state-map (kbd "C-k") #'evil-window-up)
 (define-key evil-normal-state-map (kbd "C-l") #'evil-window-right)
 
-(use-package better-jumper
-  :ensure t
-  :config
-  (better-jumper-mode 1)
-  (with-eval-after-load 'evil-maps
-    (define-key evil-motion-state-map (kbd "C-o") 'better-jumper-jump-backward)
-    (define-key evil-motion-state-map (kbd "C-i") 'better-jumper-jump-forward)))
+(use-package evil-easymotion
+  :ensure t)
+(evilem-default-keybindings "\\")
+
+;; (use-package better-jumper
+;;   :ensure t
+;;   :config
+;;   (better-jumper-mode 1)
+;;   (setq better-jumper-max-length 500)
+;;   (with-eval-after-load 'evil-maps
+;;     (define-key evil-motion-state-map (kbd "C-o") 'better-jumper-jump-backward)
+;;     (define-key evil-motion-state-map (kbd "C-i") 'better-jumper-jump-forward)))
 
 
 (use-package evil-indent-plus
@@ -264,7 +277,9 @@
   (evil-indent-plus-default-bindings))
 
 (use-package evil-text-object-python
-  :ensure t)
+  :ensure t
+  :config
+  (add-hook 'python-mode-hook (evil-text-object-python-add-bindings)))
 
 (use-package imenu-list
   :ensure t
@@ -280,14 +295,14 @@
 (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
 (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
 
-;; ;; markdown-preview mode
-;; (use-package livedown
-;;   :load-path "~/.emacs.d/site-lisp/emacs-livedown"
-;;   :custom
-;;   (livedown-autostart nil) ; automatically open preview when opening markdown files
-;;   (livedown-open t)        ; automatically open the browser window
-;;   (livedown-port 1337)     ; port for livedown server
-;;   (livedown-browser nil))
+;; markdown-preview mode
+(use-package livedown
+  :load-path "~/.emacs.d/site-lisp/emacs-livedown"
+  :custom
+  (livedown-autostart nil) ; automatically open preview when opening markdown files
+  (livedown-open t)        ; automatically open the browser window
+  (livedown-port 1337)     ; port for livedown server
+  (livedown-browser nil))
 
 ;; org-mode config
 ;; python
@@ -348,11 +363,6 @@
 (general-define-key :prefix leaderg
                     "c" 'comment-or-uncomment-regionline)
 
-;; ;; overwriten by evil leader
-;; (setq leader-next "]")
-;; (general-define-key :prefix leader-next
-;;                     "b" 'other-window)
-
 ;; occur-mode config
 (defun occur-dwim ()
   "Call `occur' with a sane default."
@@ -381,7 +391,10 @@
   ;; "tg" 'counsel-imenu
   "tg" 'imenu-list-smart-toggle
   "si" 'customize-group
-  "oc" 'occur-dwim)
+  "oc" 'occur-dwim
+  "ll" 'ivy-resume
+  "hh" 'counsel-apropos
+  "ff" 'evil-show-jumps)
 
 
 ;; (require 'popwin)
@@ -405,8 +418,6 @@
 (recentf-mode 1)
 (setq recentf-max-menu-items 100)
 
-(evil-leader/set-key
-  "vf" 'fzf)
 ;; (global-set-key "\C-x\ \C-r" 'recentf-open-files)
 
 ;; tocreate: what's this
@@ -439,6 +450,36 @@
 ;; (add-hook 'emacs-lisp-mode-hook (lambda()
 ;;                                   (add-to-list (make-local-variable 'company-backends)
 ;;                                                'company-files)))
+
+(use-package ycmd
+  :ensure t
+  :init
+  (set-variable 'ycmd-server-command '("python" "/Users/gfgkmn/.vim/vundles/YouCompleteMe_emacs/third_party/ycmd/ycmd"))
+  ;; (set-variable 'ycmd-server-command '("python" "~/.emacs.d/ycmd_completer/ycmd"))
+  :config
+  (add-hook 'after-init-hook #'global-ycmd-mode))
+
+(evil-leader/set-key
+  "gt" 'ycmd-goto-type
+  "gd" 'ycmd-goto-declaration
+  "gp" 'ycmd-goto-imprecise
+  "gf" 'ycmd-goto-definition
+  "gi" 'ycmd-goto-include
+  "gr" 'ycmd-goto-reference
+  "gm" 'ycmd-goto-implementation)
+
+;; (defun ycmd-setup-completion-at-point-function ()
+;;   "Setup `completion-at-point-functions' for `ycmd-mode'."
+;;   (add-hook 'completion-at-point-functions
+;;             #'ycmd-complete-at-point nil :local))
+
+;; (add-hook 'ycmd-mode-hook #'ycmd-setup-completion-at-point-function)
+
+(use-package company-ycmd
+  :ensure t
+  :config
+  (company-ycmd-setup))
+
 
 (setq company-global-modes '(not recentf-dialog-mode))
 (add-hook 'after-init-hook 'global-company-mode)
@@ -499,6 +540,7 @@
 
 (define-abbrev-table 'global-abbrev-table '(
                                             ;; ("gs" "git remote -vv && echo $'\\n\\tCurrent repository status:' &&  git status")
+                                            ("tc" "tocreate")
                                             ("oc" "ssh:yuhe@192.168.53.10")
                                             ("ocsu" "ssh:yuhe@192.168.53.10|sudo::")
                                             ("dv" "ssh:yuhe@192.168.53.6")
@@ -514,21 +556,14 @@
 ;; (ivy-partial-or-done)
 
 ;; (setq search-default-mode #'char-fold-to-regexp)
-(global-set-key "\C-s" 'swiper-isearch)
-(global-set-key (kbd "C-c r") 'ivy-resume)
-(global-set-key (kbd "<f6>") 'ivy-resume)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-(global-set-key (kbd "C-c g") 'counsel-git)
-(global-set-key (kbd "C-c j") 'counsel-git-grep)
-(global-set-key (kbd "C-c k") 'counsel-ag)
-;; (global-set-key (kbd "C-x l") ')
-;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(define-key evil-normal-state-map "\C-s" 'swiper-isearch)
+(define-key evil-normal-state-map "\M-n" 'swiper-isearch-thing-at-point)
+;; tocreate when m-n at swiper, then error
+(define-key evil-normal-state-map (kbd "M-x") 'counsel-M-x)
+(define-key evil-normal-state-map (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(define-key evil-normal-state-map (kbd "<f2> u") 'counsel-unicode-char)
+(define-key evil-normal-state-map (kbd "C-c g") 'counsel-git)
+(define-key evil-normal-state-map (kbd "C-c j") 'counsel-git-grep)
 
 (setq counsel-locate-db-path "~/.config/locatedb")
 
@@ -564,8 +599,11 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 
 (evil-leader/set-key
   "vo" 'counsel-find-file
+  "vf" 'counsel-fzf
   "vg" 'counsel-locate-mdfind
-  "vl" 'counsel-locate)
+  "vl" 'counsel-locate
+  "vv" 'counsel-ag)
+
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
@@ -615,8 +653,24 @@ INITIAL-INPUT can be given as the initial minibuffer input."
        '(("\\.html\\'" . web-mode))
        auto-mode-alist))
 
+(setq leader-next "]")
+(setq leader-previous "[")
+
 ;; flycheck config
-(add-hook 'prog-mode-hook 'flycheck-mode)
+(use-package flycheck
+  :ensure t
+  :config
+  (add-hook 'prog-mode-hook 'flycheck-mode))
+ 
+(with-eval-after-load 'flycheck
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+  (setq-default flycheck-disabled-checkers '(python-pylint)))
+
+(general-define-key :prefix leader-previous
+                    "q" 'flycheck-previous-error)
+(general-define-key :prefix leader-next
+                    "q" 'flycheck-next-error)
+(use-package flycheck-swift :ensure t)
 
 (evil-leader/set-key
   "ql" 'flycheck-list-errors)

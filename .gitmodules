@@ -1,0 +1,3 @@
+[submodule "ycmd_completer/ycmd"]
+	path = ycmd_completer/ycmd
+	url = git@github.com:ycm-core/ycmd.git
