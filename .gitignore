@@ -1,5 +1,6 @@
 recentf
 emacs-autosaves/*
+.cache/*
 emacs-backup/*
 org-roam.db
 auto-save-list/*
