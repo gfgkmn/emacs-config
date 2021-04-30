@@ -187,6 +187,14 @@
 ;;   :config
 ;;   (setq neo-smart-open t))
 
+(use-package treemacs
+  :ensure t)
+
+(use-package treemacs-evil
+  :ensure t)
+
+
+
 (use-package doom-themes
         :config
         ;; Global settings (defaults)
@@ -194,8 +202,8 @@
               doom-themes-enable-italic t) ; if nil, italics is universally disabled
         (load-theme 'doom-one t)
 
-        ;; Enable custom neotree theme (all-the-icons must be installed!)
-        (doom-themes-neotree-config)
+        ;; ;; Enable custom neotree theme (all-the-icons must be installed!)
+        ;; (doom-themes-neotree-config)
 
         ;; ;; or for treemacs users
         ;; (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
@@ -382,7 +390,8 @@
 ;; (require 'counsel)
 
 (evil-leader/set-key
-  "nt" 'neotree-toggle
+  ;; "nt" 'neotree-toggle
+  "nt" 'treemacs
   "be" 'ivy-switch-buffer
   "se" 'counsel-search
   "re" 'eval-last-sexp
@@ -437,21 +446,21 @@
 (sp-local-pair '(emacs-lisp-mode lisp-interaction-mode) "`" nil :actions nil)
 
 ;; company-mode and yasnippet config
-;; (use-package company
-;;   :ensure t
-;;   :config
-;;   (global-company-mode t)
-;;   (setq company-idle-delay 0)
-;;   (setq company-global-modes '(not recentf-dialog-mode))
-;;   (setq company-backends
-;;         '((company-files
-;;            company-yasnippet
-;;            company-keywords
-;;            company-capf)
-;;           (company-abbrev company-dabbrev))))
-;; (add-hook 'emacs-lisp-mode-hook (lambda()
-;;                                   (add-to-list (make-local-variable 'company-backends)
-;;                                                'company-files)))
+(use-package company
+  :ensure t
+  :config
+  (global-company-mode t)
+  (setq company-idle-delay 0)
+  (setq company-global-modes '(not recentf-dialog-mode))
+  (setq company-backends
+        '((company-files
+           company-yasnippet
+           company-keywords
+           company-capf)
+          (company-abbrev company-dabbrev))))
+(add-hook 'emacs-lisp-mode-hook (lambda()
+                                  (add-to-list (make-local-variable 'company-backends)
+                                               'company-files)))
 
 (use-package ycmd
   :ensure t
@@ -498,10 +507,9 @@
   (define-key company-active-map (kbd "C-p") #'company-select-previous)
   (define-key company-active-map (kbd "C-y") #'company-complete-selection))
 
-(with-eval-after-load 'yasnippet
-  (define-key yas-keymap (kbd "C-j") #'yas-expand-from-trigger-key)
-  (define-key yas-keymap (kbd "C-l") #'yas-describe-tables)
-  )
+
+(define-key evil-insert-state-map (kbd "C-j") #'yas-expand-from-trigger-key)
+(define-key evil-insert-state-map (kbd "C-l") #'yas-describe-tables)
 
 (global-set-key (kbd "C-=") #'er/expand-region)
 (global-set-key (kbd "C-;") #'iedit-mode)
