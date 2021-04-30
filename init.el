@@ -182,17 +182,16 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load-file custom-file)
 
-;; (use-package neotree
-;;   :ensure t
-;;   :config
-;;   (setq neo-smart-open t))
+(use-package neotree
+  :ensure t
+  :config
+  (setq neo-smart-open t))
 
-(use-package treemacs
-  :ensure t)
-
-(use-package treemacs-evil
-  :ensure t)
-
+(use-package git-gutter
+  :ensure t
+  :config
+  (global-git-gutter-mode +1)
+  (setq git-gutter:ask-p nil))
 
 
 (use-package doom-themes
@@ -608,7 +607,9 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   "vg" 'counsel-locate-mdfind
   "vl" 'counsel-locate
   "vv" 'counsel-ag
-  "vs" 'magit)
+  "vs" 'magit
+  "hs" 'git-gutter:stage-hunk
+  "hu" 'git-gutter:revert-hunk)
 
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
@@ -673,9 +674,11 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   (setq-default flycheck-disabled-checkers '(python-pylint)))
 
 (general-define-key :prefix leader-previous
-                    "q" 'flycheck-previous-error)
+                    "q" 'flycheck-previous-error
+                    "c" 'git-gutter:previous-hunk)
 (general-define-key :prefix leader-next
-                    "q" 'flycheck-next-error)
+                    "q" 'flycheck-next-error
+                    "c" 'git-gutter:next-hunk)
 (use-package flycheck-swift :ensure t)
 
 (evil-leader/set-key

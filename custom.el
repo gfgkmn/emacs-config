@@ -11,7 +11,7 @@
  '(evil-want-C-u-scroll t)
  '(neo-window-width 40)
  '(package-selected-packages
-   '(treemacs-evil treemacs company-ycmd ycmd evil-easymotion evil-text-object-python better-jumper recentf-ext fzf evil-indent-plus exato imenu-list s f dashboard all-the-icons cnfonts doom-themes company vimrc-mode ein hierarchy flycheck ob-async yasnippet yasnippet-snippets general which-key use-package evil evil-leader evil-org evil-surround evil-collection undo-fu popwin dash-at-point hungry-delete swiper neotree counsel ivy prescient ivy-prescient company-prescient smartparens iedit expand-region winum magit ctable epc deferred org-roam markdown-mode swift-mode flycheck-swift web-mode emmet-mode exec-path-from-shell))
+   '(git-gutter treemacs-evil treemacs company-ycmd ycmd evil-easymotion evil-text-object-python better-jumper recentf-ext fzf evil-indent-plus exato imenu-list s f dashboard all-the-icons cnfonts doom-themes company vimrc-mode ein hierarchy flycheck ob-async yasnippet yasnippet-snippets general which-key use-package evil evil-leader evil-org evil-surround evil-collection undo-fu popwin dash-at-point hungry-delete swiper neotree counsel ivy prescient ivy-prescient company-prescient smartparens iedit expand-region winum magit ctable epc deferred org-roam markdown-mode swift-mode flycheck-swift web-mode emmet-mode exec-path-from-shell))
  '(popwin:popup-window-position 'right)
  '(popwin:popup-window-width 80))
 (custom-set-faces
