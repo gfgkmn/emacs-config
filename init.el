@@ -202,7 +202,7 @@
         (load-theme 'doom-one t)
 
         ;; ;; Enable custom neotree theme (all-the-icons must be installed!)
-        ;; (doom-themes-neotree-config)
+        (doom-themes-neotree-config)
 
         ;; ;; or for treemacs users
         ;; (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
@@ -259,6 +259,11 @@
 (global-evil-leader-mode)
 (evil-mode t)
 
+(with-eval-after-load 'evil
+    (defalias #'forward-evil-word #'forward-evil-symbol)
+    ;; make evil-search-word look for symbol rather than word boundaries
+    (setq-default evil-symbol-word-search t))
+
 (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
 (define-key evil-insert-state-map (kbd "C-a") 'beginning-of-line)
 (define-key evil-normal-state-map (kbd "C-h") #'evil-window-left)
@@ -266,18 +271,16 @@
 (define-key evil-normal-state-map (kbd "C-k") #'evil-window-up)
 (define-key evil-normal-state-map (kbd "C-l") #'evil-window-right)
 
-(use-package evil-easymotion
+(use-package avy
   :ensure t)
-(evilem-default-keybindings "\\")
 
-;; (use-package better-jumper
-;;   :ensure t
-;;   :config
-;;   (better-jumper-mode 1)
-;;   (setq better-jumper-max-length 500)
-;;   (with-eval-after-load 'evil-maps
-;;     (define-key evil-motion-state-map (kbd "C-o") 'better-jumper-jump-backward)
-;;     (define-key evil-motion-state-map (kbd "C-i") 'better-jumper-jump-forward)))
+(use-package evil-snipe
+  :ensure t
+  :config
+  (evil-snipe-mode +1)
+  (evil-snipe-override-mode +1)
+  (setq evil-snipe-scope 'whole-line)
+  (setq evil-snipe-spillover-scope 'whole-visible))
 
 
 (use-package evil-indent-plus
@@ -389,8 +392,7 @@
 ;; (require 'counsel)
 
 (evil-leader/set-key
-  ;; "nt" 'neotree-toggle
-  "nt" 'treemacs
+  "nt" 'neotree-toggle
   "be" 'ivy-switch-buffer
   "se" 'counsel-search
   "re" 'eval-last-sexp
@@ -404,7 +406,8 @@
   "oc" 'occur-dwim
   "ll" 'ivy-resume
   "hh" 'counsel-apropos
-  "ff" 'evil-show-jumps)
+  "rf" 'evil-show-jumps
+  "af" 'avy-goto-char-timer)
 
 
 ;; (require 'popwin)
@@ -630,6 +633,14 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 					                    try-complete-lisp-symbol))
 ;; control+n and control + y conflict with emacs's control +y, tocreate
 (global-set-key (kbd "C-n") 'hippie-expand)
+
+(defun my-expand-lines ()
+  (interactive)
+  (let ((hippie-expand-try-functions-list
+         '(try-expand-line)))
+    (call-interactively 'hippie-expand)))
+
+(define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
 
 ;; * + 创建目录
 ;; * g 刷新目录
