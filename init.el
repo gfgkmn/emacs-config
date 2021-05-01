@@ -407,7 +407,8 @@
   "ll" 'ivy-resume
   "hh" 'counsel-apropos
   "rf" 'evil-show-jumps
-  "af" 'avy-goto-char-timer)
+  "af" 'avy-goto-char-timer
+  "f"  'avy-goto-char-2)
 
 
 ;; (require 'popwin)
@@ -509,7 +510,8 @@
   (define-key company-active-map (kbd "C-p") #'company-select-previous)
   (define-key company-active-map (kbd "C-y") #'company-complete-selection))
 
-(define-key ivy-mode-map (kbd "C-u") 'backward-kill-sentence)
+(with-eval-after-load 'ivy
+  (define-key ivy-mode-map (kbd "C-u") 'backward-kill-sentence))
 
 (define-key evil-insert-state-map (kbd "C-j") #'yas-expand-from-trigger-key)
 (define-key evil-insert-state-map (kbd "C-l") #'yas-describe-tables)
@@ -573,6 +575,7 @@
 (define-key evil-normal-state-map (kbd "<f2> u") 'counsel-unicode-char)
 (define-key evil-normal-state-map (kbd "C-c g") 'counsel-git)
 (define-key evil-normal-state-map (kbd "C-c j") 'counsel-git-grep)
+(define-key evil-normal-state-map (kbd "C-c f") 'counsel-find-symbol)
 
 (setq counsel-locate-db-path "~/.config/locatedb")
 
@@ -590,6 +593,11 @@
       (funcall #'counsel-locate-cmd-mdfind-all input))
      '("" "working..."))))
 
+(defun counsel-locate-cmd-maclocate (input)
+  "Return a `locate' shell command based on INPUT."
+  (counsel-require-program "locate")
+  (format "glocate -d %s -i %s" counsel-locate-db-path (shell-quote-argument input)))
+(setq counsel-locate-cmd 'counsel-locate-cmd-maclocate)
 
 (defun counsel-locate-mdfind (&optional initial-input)
   "Call a \"locate\" style shell command.
