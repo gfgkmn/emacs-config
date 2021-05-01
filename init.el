@@ -674,6 +674,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
     (call-interactively 'hippie-expand)))
 
 (define-key evil-insert-state-map (kbd "C-x C-l") 'my-expand-lines)
+(define-key evil-insert-state-map (kbd "M-v") #'evil-paste-after)
 
 ;; * + 创建目录
 ;; * g 刷新目录
@@ -759,7 +760,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 ;;   :init
 ;;   (use-package epc :defer t :ensure t)
 ;;   (use-package ctable :defer t :ensure t)
-;;   (use-package deferred :defer t :ensure t)
+
 ;;   (use-package s :defer t :ensure t)
 ;;   :custom
 ;;   (eaf-browser-continue-where-left-off t)
@@ -769,7 +770,6 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 ;;   (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
 ;;   (eaf-bind-key take_photo "p" eaf-camera-keybinding)
 ;;   (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
-
 
 ;; my/iterm
 (defun iterm ()
