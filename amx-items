@@ -1,0 +1,18 @@
+
+;; ----- amx-history -----
+(
+ amx-show-unbound-commands
+ amx-major-mode-commands
+ amx-mode
+ cd
+ 5x5
+ amx
+ arp
+)
+
+;; ----- amx-data -----
+(
+ (amx-mode . 1)
+ (amx-major-mode-commands . 1)
+ (amx-show-unbound-commands . 1)
+)

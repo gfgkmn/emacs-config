@@ -39,8 +39,8 @@
 ;; tocreate
 (setq ns-pop-up-frames nil)
 
-;; ;; disable by doom theme or dashboard
-;; (setq inhibit-startup-screen t)
+;; disabled by doom theme or dashboard
+(setq inhibit-startup-screen t)
 ;; (setq-default left-margin-width 3 right-margin-width 3)
 ;; (set-fringe-mode '(6 . 6))
 ;; (set-face-attribute 'fringe nil
@@ -102,7 +102,7 @@
                       s
                       f
                       ;; Self plugins
-                      dashboard
+                      ;; dashboard
                       all-the-icons
                       cnfonts
                       doom-themes
@@ -133,7 +133,7 @@
                       counsel
                       ivy
                       imenu-list
-                      prescient
+                      ;; prescient
                       ivy-prescient
                       company-prescient
                       smartparens
@@ -221,29 +221,29 @@
 	     (funcall fn)))))
 
 
-;; dashboasd's config
-(dashboard-setup-startup-hook)
-;; Set the title
-(setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
-;; Set the banner
-(setq dashboard-startup-banner "/Users/gfgkmn/Configs/Emacs/emacs_red_small.png")
-;; Value can be
-;; 'official:  which displays the official emacs logo
-;; 'logo:  which displays an alternative emacs logo
-;; 1, 2 or 3 which displays one of the text banners
-;; "path/to/your/image.png" which displays whatever image you would prefer
-;; ;; Content is not centered by default. To center, set
-;; (setq dashboard-center-content t)
-;; To disable shortcut "jump" indicators for each section, set
-;; (setq dashboard-show-shortcuts nil)
-(setq dashboard-items '((recents  . 10)
-                        (bookmarks . 5)
-                        ;; (projects . 5)
-                        (agenda . 5)))
-                        ;; (registers . 5)))
-(setq dashboard-set-heading-icons t)
-(setq dashboard-set-file-icons t)
-(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+;; ;; dashboasd's config
+;; (dashboard-setup-startup-hook)
+;; ;; Set the title
+;; (setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
+;; ;; Set the banner
+;; (setq dashboard-startup-banner "/Users/gfgkmn/Configs/Emacs/emacs_red_small.png")
+;; ;; Value can be
+;; ;; 'official:  which displays the official emacs logo
+;; ;; 'logo:  which displays an alternative emacs logo
+;; ;; 1, 2 or 3 which displays one of the text banners
+;; ;; "path/to/your/image.png" which displays whatever image you would prefer
+;; ;; ;; Content is not centered by default. To center, set
+;; ;; (setq dashboard-center-content t)
+;; ;; To disable shortcut "jump" indicators for each section, set
+;; ;; (setq dashboard-show-shortcuts nil)
+;; (setq dashboard-items '((recents  . 10)
+;;                         (bookmarks . 5)
+;;                         ;; (projects . 5)
+;;                         (agenda . 5)))
+;;                         ;; (registers . 5)))
+;; (setq dashboard-set-heading-icons t)
+;; (setq dashboard-set-file-icons t)
+;; (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 
 
 ;; which-key config
@@ -328,7 +328,7 @@
 (global-set-key (kbd "C-c a") 'org-agenda)
 
 ;; define org-mode vim-style keymaping.
-(add-to-list 'load-path "~/.emacs.d/plugins/evil-org-mode")
+;; (add-to-list 'load-path "~/.emacs.d/plugins/evil-org-mode")
 
 ;; org-roam config
 (use-package org-roam
@@ -518,7 +518,28 @@
 
 (global-set-key (kbd "C-=") #'er/expand-region)
 (global-set-key (kbd "C-;") #'iedit-mode)
-(global-set-key (kbd "C-x k") #'kill-buffer-and-window)
+(global-set-key (kbd "C-x C-k") #'kill-buffer-and-window)
+
+;; delete M-x ^
+(with-eval-after-load 'counsel
+  (setq ivy-initial-inputs-alist nil))
+
+(setq ivy-re-builders-alist
+      '((counsel-rg . ivy--regex-plus)
+        (swiper . ivy--regex-plus)
+        (swiper-isearch . ivy--regex-plus)
+        (t . ivy--regex-ignore-order)))
+
+;; show detail in ivy minibuffer
+(use-package ivy-rich
+  :ensure t
+  :config
+  (ivy-rich-mode 1))
+
+(use-package amx
+  :ensure t
+  :config
+  (amx-mode))
 
 ;; tocreate redundent with company-yasnippet-or-completion ?
 (advice-add 'company-complete-common :before (lambda () (setq my-company-point (point))))
@@ -746,3 +767,15 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 ;;   (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
 ;;   (eaf-bind-key take_photo "p" eaf-camera-keybinding)
 ;;   (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
+
+
+;; my/iterm
+(defun iterm ()
+  (interactive)
+  (set-buffer (make-term "iterminal" "/bin/zsh"))
+  (term-mode)
+  (term-char-mode)
+  (switch-to-buffer "*iterminal*"))
+
+(add-to-list 'display-buffer-alist
+             '("^\\*shell\\*$" . (display-buffer-same-window)))
