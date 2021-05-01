@@ -4,6 +4,7 @@ emacs-autosaves/*
 emacs-backup/*
 org-roam.db
 auto-save-list/*
+.*.swp
 eshell/*
 url/*
 request/*
