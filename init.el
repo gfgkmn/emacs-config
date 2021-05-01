@@ -102,6 +102,7 @@
                       s
                       f
                       ;; Self plugins
+                      use-package
                       ;; dashboard
                       all-the-icons
                       cnfonts
@@ -118,7 +119,6 @@
                       yasnippet-snippets
                       general
                       which-key
-                      use-package
                       evil-leader
                       evil-org
                       evil-surround
@@ -133,9 +133,6 @@
                       counsel
                       ivy
                       imenu-list
-                      ;; prescient
-                      ivy-prescient
-                      company-prescient
                       smartparens
                       iedit
                       expand-region
@@ -536,10 +533,15 @@
   :config
   (ivy-rich-mode 1))
 
-(use-package amx
-  :ensure t
-  :config
-  (amx-mode))
+(use-package prescient :ensure t)
+(use-package ivy-prescient
+             :ensure t
+             :config
+             (ivy-prescient-mode))
+(use-package company-prescient
+             :ensure t
+             :config
+             (company-prescient-mode))
 
 ;; tocreate redundent with company-yasnippet-or-completion ?
 (advice-add 'company-complete-common :before (lambda () (setq my-company-point (point))))
