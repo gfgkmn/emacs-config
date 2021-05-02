@@ -586,6 +586,11 @@
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 (setq counsel-search-engine 'google)
+
+;; ;; custom function
+;; (cons "hl" "zh-CN")
+;; (cons "oe" "utf-8")
+
 ;; maybe should indicate it only available when search on web
 ;; (ivy-partial-or-done)
 

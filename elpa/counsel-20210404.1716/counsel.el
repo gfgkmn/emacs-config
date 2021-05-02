@@ -6852,6 +6852,8 @@ We update it in the callback with `ivy-update-candidates'."
       :type "GET"
       :params (list
                (cons "client" "firefox")
+               (cons "hl" "en")
+               (cons "oe" "utf-8")
                (cons "q" input))
       :parser 'json-read
       :success (cl-function
