@@ -246,6 +246,10 @@
 ;; which-key config
 (which-key-mode 1)
 
+(use-package quickrun
+  :ensure t)
+;; tocreate: define myself quickrun action to support shebang
+
 ;; evil config
 (setq evil-want-keybinding nil)
 (setq evil-want-fine-undo t)
@@ -391,8 +395,6 @@
 (evil-leader/set-key
   "nt" 'neotree-toggle
   "be" 'ivy-switch-buffer
-  "se" 'counsel-search
-  "re" 'eval-last-sexp
   "ca" 'delete-other-windows
   ;; "dd" 'dash-at-point-with-docset)
   "dd" 'dash-at-point
@@ -400,10 +402,13 @@
   ;; "tg" 'counsel-imenu
   "tg" 'imenu-list-smart-toggle
   "si" 'customize-group
+  "se" 'counsel-search
   "oc" 'occur-dwim
   "ll" 'ivy-resume
   "hh" 'counsel-apropos
   "rf" 'evil-show-jumps
+  "rr"  'quickrun
+  "re" 'eval-last-sexp
   "af" 'avy-goto-char-timer
   "f"  'avy-goto-char-2)
 
@@ -786,3 +791,4 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 
 (add-to-list 'display-buffer-alist
              '("^\\*shell\\*$" . (display-buffer-same-window)))
+
