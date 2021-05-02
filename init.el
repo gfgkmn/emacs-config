@@ -15,6 +15,8 @@
 (menu-bar-mode -1)
 
 (setq mac-use-title-bar t)
+;; the different between setq and setq-default only exists when the variable to
+;; deal is buffer-local variable, so you should use setq-default
 (setq-default abbrev-mode t)
 (setq-default cursor-type 'bar)
 (setq scroll-conservatively 50)
@@ -32,9 +34,6 @@
 (global-auto-revert-mode t)
 
 (windmove-default-keybindings)
-
-;; the different between setq and setq-default only exists when the variable to
-;; deal is buffer-local variable, so you should use setq-default
 
 ;; tocreate
 (setq ns-pop-up-frames nil)
@@ -155,7 +154,7 @@
                       ;; ;; --- Minor Mode ---
                       ;; nodejs-repl
                       exec-path-from-shell
-                      ) "Default packages")
+                      ) "Default packages.")
 
 (setq package-selected-packages my/packages)
 
@@ -247,7 +246,9 @@
 (which-key-mode 1)
 
 (use-package quickrun
-  :ensure t)
+  :ensure t
+  :config
+  (setq-default quickrun-option-shebang nil))
 ;; tocreate: define myself quickrun action to support shebang
 
 ;; evil config
@@ -417,10 +418,12 @@
 (popwin-mode t)
 
 (defun open_emacs ()
+  "Edit init.el quickly."
   (interactive)
   (find-file user-init-file))
 
 (defun eval_emacs ()
+  "Load init.el quickly."
   (interactive)
   (load-file user-init-file))
 
@@ -633,7 +636,7 @@
 (setq counsel-locate-cmd 'counsel-locate-cmd-maclocate)
 
 (defun counsel-locate-mdfind (&optional initial-input)
-  "Call a \"locate\" style shell command.
+  "Call mdfind shell command.
 INITIAL-INPUT can be given as the initial minibuffer input."
   (interactive)
   (ivy-read "Locate: " 'counsel-locate-mdfind-function
@@ -783,6 +786,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 
 ;; my/iterm
 (defun iterm ()
+  "Open term-mode using zsh without ask."
   (interactive)
   (set-buffer (make-term "iterminal" "/bin/zsh"))
   (term-mode)
@@ -792,3 +796,10 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 (add-to-list 'display-buffer-alist
              '("^\\*shell\\*$" . (display-buffer-same-window)))
 
+
+;; multidedia config
+(use-package mpv
+   :ensure t)
+
+(provide 'init)
+;;; init.el ends here
