@@ -189,6 +189,18 @@
   (global-git-gutter-mode +1)
   (setq git-gutter:ask-p nil))
 
+(use-package vimish-fold
+  :ensure
+  :after evil)
+
+(use-package evil-vimish-fold
+  :ensure
+  :after vimish-fold
+  :init
+  (setq evil-vimish-fold-mode-lighter " ⮒")
+  (setq evil-vimish-fold-target-modes '(prog-mode conf-mode text-mode))
+  :config
+  (global-evil-vimish-fold-mode))
 
 (use-package doom-themes
         :config
