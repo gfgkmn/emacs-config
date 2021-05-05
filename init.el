@@ -183,6 +183,12 @@
   :config
   (setq neo-smart-open t))
 
+(add-hook 'neo-after-create-hook
+        #'(lambda (_)
+            (with-current-buffer (get-buffer neo-buffer-name)
+                (setq truncate-lines t)
+                (setq word-wrap nil))))
+
 (use-package git-gutter
   :ensure t
   :config
@@ -405,6 +411,7 @@
 
 ;; (require 'counsel)
 
+
 (evil-leader/set-key
   "nt" 'neotree-toggle
   "be" 'ivy-switch-buffer
@@ -420,7 +427,8 @@
   "ll" 'ivy-resume
   "hh" 'counsel-apropos
   "rf" 'evil-show-jumps
-  "rr"  'quickrun
+  "rr" 'quickrun
+  "rp" 'typora-preview
   "re" 'eval-last-sexp
   "af" 'avy-goto-char-timer
   "f"  'avy-goto-char-2)
