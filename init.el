@@ -431,7 +431,7 @@
   "rp" 'typora-preview
   "re" 'eval-last-sexp
   "af" 'avy-goto-char-timer
-  "f"  'avy-goto-char-2)
+  "ff" 'avy-goto-char)
 
 
 ;; (require 'popwin)
@@ -544,6 +544,9 @@
 (global-set-key (kbd "C-=") #'er/expand-region)
 (global-set-key (kbd "C-;") #'iedit-mode)
 (global-set-key (kbd "C-x C-k") #'kill-buffer-and-window)
+(global-set-key (kbd "M-=") #'cnfonts-increase-fontsize)
+(global-set-key (kbd "M--") #'cnfonts-decrease-fontsize)
+
 
 ;; delete M-x ^
 (with-eval-after-load 'counsel
@@ -600,14 +603,18 @@
           (lambda () (setq dash-at-point-docset "lisp")))
 
 
-(define-abbrev-table 'global-abbrev-table '(
-                                            ;; ("gs" "git remote -vv && echo $'\\n\\tCurrent repository status:' &&  git status")
-                                            ("tc" "tocreate")
-                                            ("oc" "ssh:yuhe@192.168.53.10")
-                                            ("ocsu" "ssh:yuhe@192.168.53.10|sudo::")
-                                            ("dv" "ssh:yuhe@192.168.53.6")
-                                            ("ia" "ssh:yuhe@192.168.53.5")
+(define-abbrev-table 'term-mode-abbrev-table '(
+                                            (";gs" "git remote -vv && echo $'\\n\\tCurrent repository status:' &&  git status")
+                                            (";oc" "ssh:yuhe@192.168.53.10")
+                                            (";ocsu" "ssh:yuhe@192.168.53.10|sudo::")
+                                            (";dv" "ssh:yuhe@192.168.53.6")
+                                            (";ia" "ssh:yuhe@192.168.53.5")
                                             ))
+
+(define-abbrev-table 'prog-mode-abbrev-table '(("tc" "tocreate")))
+
+(define-abbrev-table 'Markdown-mode-abbrev-table '(("_" "\\_")))
+
 
 ;; Ivy counsel and swiper config
 (ivy-mode)
