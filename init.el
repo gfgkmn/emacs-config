@@ -743,6 +743,11 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   (setq dgi-auto-hide-details-p nil)
   (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable))
 
+(use-package dired-k
+  :ensure t)
+;; (use-package dired-git
+;;   :ensure t)
+;; (add-hook 'dired-mode-hook 'dired-git-mode)
 
 ;; web-mode config
 (setq auto-mode-alist
@@ -810,6 +815,13 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 ;;   (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
 ;;   (eaf-bind-key take_photo "p" eaf-camera-keybinding)
 ;;   (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
+
+(use-package counsel-tramp
+  :ensure t)
+
+(evil-leader/set-key
+  "cs" 'counsel-tramp)
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
 ;; my/iterm
 (defun iterm ()
