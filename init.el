@@ -409,6 +409,19 @@
         regexp-history)
   (call-interactively 'occur))
 
+
+;; occur-mode config
+(defun counsel-search-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (counsel-search-action (concat (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym)))) " " "emacs")))
+
 ;; (require 'counsel)
 
 
@@ -423,6 +436,7 @@
   "tg" 'imenu-list-smart-toggle
   "si" 'customize-group
   "se" 'counsel-search
+  "so" 'counsel-search-dwim
   "oc" 'occur-dwim
   "ll" 'ivy-resume
   "hh" 'counsel-apropos
@@ -743,9 +757,6 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   (setq dgi-auto-hide-details-p nil)
   (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable))
 
-;; (use-package dired-git
-;;   :ensure t)
-;; (add-hook 'dired-mode-hook 'dired-git-mode)
 
 ;; web-mode config
 (setq auto-mode-alist
