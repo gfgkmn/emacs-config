@@ -5,6 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(browse-url-browser-function 'browse-url-default-macosx-browser)
  '(dired-dwim-target 'dired-dwim-target-next)
+ '(dired-k-style 'git)
  '(dired-use-ls-dired nil)
  '(evil-want-C-d-scroll t)
  '(evil-want-C-g-bindings t)

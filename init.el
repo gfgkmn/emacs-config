@@ -578,7 +578,10 @@
   :config
   (ivy-rich-mode 1))
 
-(use-package prescient :ensure t)
+(use-package prescient
+  :ensure t
+  :config
+  (prescient-persist-mode))
 (use-package ivy-prescient
              :ensure t
              :config
@@ -756,6 +759,11 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   :config
   (setq dgi-auto-hide-details-p nil)
   (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable))
+
+(use-package dired-k
+  :ensure t
+  :config
+  (add-hook 'dired-initial-position-hook 'dired-k))
 
 
 ;; web-mode config
