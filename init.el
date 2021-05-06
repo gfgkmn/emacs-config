@@ -743,8 +743,6 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   (setq dgi-auto-hide-details-p nil)
   (add-hook 'dired-after-readin-hook 'dired-git-info-auto-enable))
 
-(use-package dired-k
-  :ensure t)
 ;; (use-package dired-git
 ;;   :ensure t)
 ;; (add-hook 'dired-mode-hook 'dired-git-mode)
