@@ -225,6 +225,9 @@
         ;; Corrects (and improves) org-mode's native fontification.
         (doom-themes-org-config))
 
+(use-package vline
+  :load-path "~/.emacs.d/site-lisp/vline")
+
 ;; highlight the brackets where the cursor locate
 (show-paren-mode)
 (define-advice show-paren-function (:around (fn) fix-show-paren-function)
@@ -276,6 +279,9 @@
 (when (require 'evil-collection nil t)
   (evil-collection-init))
 
+(evil-collection-define-key 'normal 'eww-mode-map
+  "^" 'evil-first-non-blank)
+
 (global-evil-leader-mode)
 (evil-mode t)
 
@@ -326,6 +332,8 @@
 (global-evil-surround-mode 1)
 (define-key evil-normal-state-map "u" 'undo-fu-only-undo)
 (define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
+
+(evil-ex-define-cmd "q[uit]" 'evil-delete-buffer)
 
 ;; markdown-preview mode
 (use-package livedown
@@ -466,6 +474,11 @@
 
 (evil-leader/set-key
   "oi" 'open_emacs)
+
+;; tocreate  not compatible with xref and no highlight
+;; (use-package evil-mc
+;;   :ensure t)
+;; (global-evil-mc-mode  1)
 
 ;; use recent file
 (recentf-mode 1)
@@ -620,18 +633,22 @@
           (lambda () (setq dash-at-point-docset "lisp")))
 
 
+;; (define-abbrev-table 'global-abbrev-table '(
+;;                                             (";gs" "git remote -vv && echo $'\\n\\tCurrent repository status:' &&  git status")
+;;                                             ("tc" "tocreate")
+;;                                             (";oc" "ssh:yuhe@192.168.53.10")
+;;                                             (";ocsu" "ssh:yuhe@192.168.53.10|sudo::")
+;;                                             (";dv" "ssh:yuhe@192.168.53.6")
+;;                                             (";ia" "ssh:yuhe@192.168.53.5")
+;;                                             ))
+
 (define-abbrev-table 'term-mode-abbrev-table '(
-                                            (";gs" "git remote -vv && echo $'\\n\\tCurrent repository status:' &&  git status")
-                                            (";oc" "ssh:yuhe@192.168.53.10")
-                                            (";ocsu" "ssh:yuhe@192.168.53.10|sudo::")
-                                            (";dv" "ssh:yuhe@192.168.53.6")
-                                            (";ia" "ssh:yuhe@192.168.53.5")
+                                            ("gs" "git remote -vv && echo $'\\n\\tCurrent repository status:' &&  git status")
+                                            ("oc" "ssh:yuhe@192.168.53.10")
+                                            ("ocsu" "ssh:yuhe@192.168.53.10|sudo::")
+                                            ("dv" "ssh:yuhe@192.168.53.6")
+                                            ("ia" "ssh:yuhe@192.168.53.5")
                                             ))
-
-(define-abbrev-table 'prog-mode-abbrev-table '(("tc" "tocreate")))
-
-(define-abbrev-table 'Markdown-mode-abbrev-table '(("_" "\\_")))
-
 
 ;; Ivy counsel and swiper config
 (ivy-mode)
@@ -764,6 +781,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   :ensure t
   :config
   (add-hook 'dired-initial-position-hook 'dired-k))
+;; tocreate binding \gk to dired-k
 
 
 ;; web-mode config
@@ -795,7 +813,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 (use-package flycheck-swift :ensure t)
 
 (evil-leader/set-key
-  "ql" 'flycheck-list-errors)
+  "lo" 'flycheck-list-errors)
 
 
 ;; get current file name

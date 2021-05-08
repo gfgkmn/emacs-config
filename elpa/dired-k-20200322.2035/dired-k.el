@@ -335,7 +335,7 @@
   (when revert
     (revert-buffer nil t))
   (save-excursion
-    ;; (dired-k--highlight-by-file-attribyte)
+    (dired-k--highlight-by-file-attribyte)
     (when (dired-k--inside-git-repository-p)
       (let ((root (dired-k--root-directory)))
         (when root
