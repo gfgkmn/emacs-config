@@ -403,17 +403,21 @@
 (general-define-key :prefix leaderg
                     "c" 'comment-or-uncomment-regionline)
 
+(defun get-current-point ()
+  (if (region-active-p)
+      (buffer-substring-no-properties
+       (region-beginning)
+       (region-end))
+    (let ((sym (thing-at-point 'symbol)))
+      (when (stringp sym)
+        (regexp-quote sym)))))
+
+
 ;; occur-mode config
 (defun occur-dwim ()
   "Call `occur' with a sane default."
   (interactive)
-  (push (if (region-active-p)
-            (buffer-substring-no-properties
-             (region-beginning)
-             (region-end))
-          (let ((sym (thing-at-point 'symbol)))
-            (when (stringp sym)
-              (regexp-quote sym))))
+  (push (get-current-point)
         regexp-history)
   (call-interactively 'occur))
 
@@ -422,16 +426,19 @@
 (defun counsel-search-dwim ()
   "Call `occur' with a sane default."
   (interactive)
-  (counsel-search-action (concat (if (region-active-p)
-            (buffer-substring-no-properties
-             (region-beginning)
-             (region-end))
-          (let ((sym (thing-at-point 'symbol)))
-            (when (stringp sym)
-              (regexp-quote sym)))) " " "emacs")))
+  (counsel-search-action
+   (concat (get-current-point) " " "emacs")))
+
+;; occur-mode config
+(defun counsel-ag-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (counsel-ag (get-current-point)))
 
 ;; (require 'counsel)
 
+(use-package osx-dictionary 
+  :ensure t)
 
 (evil-leader/set-key
   "nt" 'neotree-toggle
@@ -439,6 +446,8 @@
   "ca" 'delete-other-windows
   ;; "dd" 'dash-at-point-with-docset)
   "dd" 'dash-at-point
+  "ds" 'osx-dictionary-search-word-at-point
+  "dr" 'osx-dictionary-search-input
   "ex" 'dired
   ;; "tg" 'counsel-imenu
   "tg" 'imenu-list-smart-toggle
@@ -474,11 +483,6 @@
 
 (evil-leader/set-key
   "oi" 'open_emacs)
-
-;; tocreate  not compatible with xref and no highlight
-;; (use-package evil-mc
-;;   :ensure t)
-;; (global-evil-mc-mode  1)
 
 ;; use recent file
 (recentf-mode 1)
@@ -556,10 +560,6 @@
       (call-interactively #'company-complete-common))))
 
 (with-eval-after-load 'company
-  (define-key company-active-map (kbd "M-n") nil)
-  (define-key company-active-map (kbd "M-p") nil)
-  (define-key company-active-map (kbd "C-n") #'company-select-next)
-  (define-key company-active-map (kbd "C-p") #'company-select-previous)
   (define-key company-active-map (kbd "C-y") #'company-complete-selection))
 
 (with-eval-after-load 'ivy
@@ -573,7 +573,6 @@
 (global-set-key (kbd "C-x C-k") #'kill-buffer-and-window)
 (global-set-key (kbd "M-=") #'cnfonts-increase-fontsize)
 (global-set-key (kbd "M--") #'cnfonts-decrease-fontsize)
-
 
 ;; delete M-x ^
 (with-eval-after-load 'counsel
@@ -665,7 +664,8 @@
 
 ;; (setq search-default-mode #'char-fold-to-regexp)
 (define-key evil-normal-state-map "\C-s" 'swiper-isearch)
-(define-key evil-normal-state-map "\M-n" 'swiper-isearch-thing-at-point)
+;; (define-key evil-normal-state-map "\M-n" 'swiper-isearch-thing-at-point)
+(define-key evil-normal-state-map "*" 'swiper-isearch-thing-at-point)
 ;; tocreate when m-n at swiper, then error
 (define-key evil-normal-state-map (kbd "M-x") 'counsel-M-x)
 (define-key evil-normal-state-map (kbd "<f2> i") 'counsel-info-lookup-symbol)
@@ -716,7 +716,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   "vf" 'counsel-fzf
   "vg" 'counsel-locate-mdfind
   "vl" 'counsel-locate
-  "vv" 'counsel-ag
+  "vv" 'counsel-ag-dwim
   "vs" 'magit
   "hs" 'git-gutter:stage-hunk
   "hu" 'git-gutter:revert-hunk)
@@ -738,8 +738,6 @@ INITIAL-INPUT can be given as the initial minibuffer input."
                                         try-expand-line
                                         try-complete-lisp-symbol-partially
 					                    try-complete-lisp-symbol))
-;; control+n and control + y conflict with emacs's control +y, tocreate
-(global-set-key (kbd "C-n") 'hippie-expand)
 
 (defun my-expand-lines ()
   (interactive)
