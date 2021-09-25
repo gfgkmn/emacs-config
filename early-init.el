@@ -40,3 +40,4 @@
 (setq user-emacs-directory (file-name-directory load-file-name))
 
 (setq initial-frame-alist '((top . 120) (left . 210) (width . 200) (height . 53)))
+(add-to-list 'default-frame-alist '(internal-border-width . 7))

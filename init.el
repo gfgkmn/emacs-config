@@ -14,6 +14,7 @@
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
 
+
 (setq mac-use-title-bar t)
 ;; the different between setq and setq-default only exists when the variable to
 ;; deal is buffer-local variable, so you should use setq-default
@@ -335,14 +336,14 @@
 
 (evil-ex-define-cmd "q[uit]" 'evil-delete-buffer)
 
-;; markdown-preview mode
-(use-package livedown
-  :load-path "~/.emacs.d/site-lisp/emacs-livedown"
-  :custom
-  (livedown-autostart nil) ; automatically open preview when opening markdown files
-  (livedown-open t)        ; automatically open the browser window
-  (livedown-port 1337)     ; port for livedown server
-  (livedown-browser nil))
+;; ;; markdown-preview mode
+;; (use-package livedown
+;;   :load-path "~/.emacs.d/site-lisp/emacs-livedown"
+;;   :custom
+;;   (livedown-autostart nil) ; automatically open preview when opening markdown files
+;;   (livedown-open t)        ; automatically open the browser window
+;;   (livedown-port 1337)     ; port for livedown server
+;;   (livedown-browser nil))
 
 ;; org-mode config
 ;; python
@@ -713,6 +714,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
 
 (evil-leader/set-key
   "vf" 'counsel-find-file
+  "fr" 'counsel-recentf
   "vo" 'counsel-fzf
   "vg" 'counsel-locate-mdfind
   "vl" 'counsel-locate
@@ -720,6 +722,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   "vr" 'magit
   "hs" 'git-gutter:stage-hunk
   "hu" 'git-gutter:revert-hunk)
+
 
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
@@ -853,7 +856,7 @@ INITIAL-INPUT can be given as the initial minibuffer input."
   :ensure t)
 
 (evil-leader/set-key
-  "cs" 'counsel-tramp)
+  "sh" 'counsel-tramp)
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 
 ;; my/iterm
