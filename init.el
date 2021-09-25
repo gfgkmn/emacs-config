@@ -521,33 +521,33 @@
                                   (add-to-list (make-local-variable 'company-backends)
                                                'company-files)))
 
-(use-package ycmd
-  :ensure t
-  :init
-  (set-variable 'ycmd-server-command '("python" "/Users/gfgkmn/.emacs.d/ycmd_completer/ycmd/ycmd"))
-  :config
-  (add-hook 'after-init-hook #'global-ycmd-mode))
+;; (use-package ycmd
+;;   :ensure t
+;;   :init
+;;   (set-variable 'ycmd-server-command '("python" "/Users/gfgkmn/.emacs.d/ycmd_completer/ycmd/ycmd"))
+;;   :config
+;;   (add-hook 'after-init-hook #'global-ycmd-mode))
 
-(evil-leader/set-key
-  "gt" 'ycmd-goto-type
-  "gd" 'ycmd-goto-declaration
-  "gp" 'ycmd-goto-imprecise
-  "gf" 'ycmd-goto-definition
-  "gi" 'ycmd-goto-include
-  "gr" 'ycmd-goto-reference
-  "gm" 'ycmd-goto-implementation)
+;; (evil-leader/set-key
+;;   "gt" 'ycmd-goto-type
+;;   "gd" 'ycmd-goto-declaration
+;;   "gp" 'ycmd-goto-imprecise
+;;   "gf" 'ycmd-goto-definition
+;;   "gi" 'ycmd-goto-include
+;;   "gr" 'ycmd-goto-reference
+;;   "gm" 'ycmd-goto-implementation)
 
-;; (defun ycmd-setup-completion-at-point-function ()
-;;   "Setup `completion-at-point-functions' for `ycmd-mode'."
-;;   (add-hook 'completion-at-point-functions
-;;             #'ycmd-complete-at-point nil :local))
+;; ;; (defun ycmd-setup-completion-at-point-function ()
+;; ;;   "Setup `completion-at-point-functions' for `ycmd-mode'."
+;; ;;   (add-hook 'completion-at-point-functions
+;; ;;             #'ycmd-complete-at-point nil :local))
 
-;; (add-hook 'ycmd-mode-hook #'ycmd-setup-completion-at-point-function)
+;; ;; (add-hook 'ycmd-mode-hook #'ycmd-setup-completion-at-point-function)
 
-(use-package company-ycmd
-  :ensure t
-  :config
-  (company-ycmd-setup))
+;; (use-package company-ycmd
+;;   :ensure t
+;;   :config
+;;   (company-ycmd-setup))
 
 
 (setq company-global-modes '(not recentf-dialog-mode))
@@ -712,12 +712,12 @@ INITIAL-INPUT can be given as the initial minibuffer input."
             :caller 'counsel-locate-mdfind))
 
 (evil-leader/set-key
-  "vo" 'counsel-find-file
-  "vf" 'counsel-fzf
+  "vf" 'counsel-find-file
+  "vo" 'counsel-fzf
   "vg" 'counsel-locate-mdfind
   "vl" 'counsel-locate
   "vv" 'counsel-ag-dwim
-  "vs" 'magit
+  "vr" 'magit
   "hs" 'git-gutter:stage-hunk
   "hu" 'git-gutter:revert-hunk)
 
